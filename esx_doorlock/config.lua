@@ -46,8 +46,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 8.0,
-		slides = true,
-		auto = true
+		slides = true
 	},
 
 	-- MRPD LOCKER ROOMS
@@ -132,8 +131,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true,
-		auto = true
+		flip = true
 	},
 
 	-- MRPD SERVER
