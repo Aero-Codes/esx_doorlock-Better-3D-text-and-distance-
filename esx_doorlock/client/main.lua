@@ -62,53 +62,53 @@ Citizen.CreateThread(function()
 			if initiated and doorID.textCoords then
 				if doorID.textCoords then d = #(doorID.textCoords - playerCoords) end
 			end
-			if (initiated and d > 20.0) then goto theEnd end
+			if (initiated and d < 30.0) then
 
-			if not doorID.textCoords and DoesEntityExist(doorID.object) and not doorID.doors then
-				local minDimension, maxDimension = GetModelDimensions(doorID.objHash)
-				if doorID.flip then dimensions = minDimension - maxDimension else dimensions = maxDimension - minDimension end
-				local dx, dy = tonumber(string.sub(dimensions.x, 1, 6)), tonumber(string.sub(dimensions.y, 1, 6))
-				if doorID.print then print (dx..' '..dy) end
-				if doorID.objHeading == 90.0 or doorID.objHeading == 270.0 then dx, dy = dy, dx end
-				doorID.textCoords = GetEntityCoords(doorID.object) - vector3(dx/2, dy/2, 0)
-			end
-			if doorID.doors then
-				for k,v in ipairs(doorID.doors) do
-					if v.object and DoesEntityExist(v.object) then
-						if k == 2 and not doorID.setText then
-							distance = doorID.textCoords - v.objCoords
-							doorID.textCoords = (doorID.textCoords - (distance / 2))
-							doorID.setText = true
-						end
-						if not doorID.textCoords and k == 1 then
-							doorID.textCoords = v.objCoords
+				if not doorID.textCoords and DoesEntityExist(doorID.object) and not doorID.doors then
+					local minDimension, maxDimension = GetModelDimensions(doorID.objHash)
+					if doorID.flip then dimensions = minDimension - maxDimension else dimensions = maxDimension - minDimension end
+					local dx, dy = tonumber(string.sub(dimensions.x, 1, 6)), tonumber(string.sub(dimensions.y, 1, 6))
+					if doorID.print then print (dx..' '..dy) end
+					if doorID.objHeading == 90.0 or doorID.objHeading == 270.0 then dx, dy = dy, dx end
+					doorID.textCoords = GetEntityCoords(doorID.object) - vector3(dx/2, dy/2, 0)
+				end
+				if doorID.doors then
+					for k,v in ipairs(doorID.doors) do
+						if v.object and DoesEntityExist(v.object) then
+							if k == 2 and not doorID.setText then
+								distance = doorID.textCoords - v.objCoords
+								doorID.textCoords = (doorID.textCoords - (distance / 2))
+								doorID.setText = true
+							end
+							if not doorID.textCoords and k == 1 then
+								doorID.textCoords = v.objCoords
+							else
+								doorID.distanceToPlayer = 1
+							end
 						else
-							doorID.distanceToPlayer = 1
+							doorID.distanceToPlayer = nil
+							v.object = GetClosestObjectOfType(v.objCoords, 1.0, v.objHash, false, false, false)
+							if doorID.delete and DoesEntityExist(v.object) then
+								SetEntityAsMissionEntity(v.object, 1, 1)
+								DeleteObject(v.object)
+								SetEntityAsNoLongerNeeded(v.object)
+							end
 						end
+					end
+				else
+					if doorID.object and DoesEntityExist(doorID.object) then
+						doorID.distanceToPlayer = 1
 					else
 						doorID.distanceToPlayer = nil
-						v.object = GetClosestObjectOfType(v.objCoords, 1.0, v.objHash, false, false, false)
-						if doorID.delete and DoesEntityExist(v.object) then
-							SetEntityAsMissionEntity(v.object, 1, 1)
-							DeleteObject(v.object)
-							SetEntityAsNoLongerNeeded(v.object)
+						doorID.object = GetClosestObjectOfType(doorID.objCoords, 1.0, doorID.objHash, false, false, false)
+						if doorID.delete and DoesEntityExist(doorID.object) then
+							SetEntityAsMissionEntity(doorID.object, 1, 1)
+							DeleteObject(doorID.object)
+							SetEntityAsNoLongerNeeded(doorID.object)
 						end
 					end
 				end
-			else
-				if doorID.object and DoesEntityExist(doorID.object) then
-					doorID.distanceToPlayer = 1
-				else
-					doorID.distanceToPlayer = nil
-					doorID.object = GetClosestObjectOfType(doorID.objCoords, 1.0, doorID.objHash, false, false, false)
-					if doorID.delete and DoesEntityExist(doorID.object) then
-						SetEntityAsMissionEntity(doorID.object, 1, 1)
-						DeleteObject(doorID.object)
-						SetEntityAsNoLongerNeeded(doorID.object)
-					end
-				end
 			end
-		::theEnd::
 		end
 		if not initiated then initiated = true else Citizen.Wait(1000) end
 	end
