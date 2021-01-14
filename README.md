@@ -5,7 +5,7 @@ Ignores doors that are not in range.
 Seperated entityfreeze and control check to reduce functions being performed.  
 Personally went from 0.3ms near doors to 0.12ms maximum.  
 Doors will lock once the door swing is complete.  
-Support for automatic doors and sliding doors (gates).
+Support for sliding doors (gates).
 
 
 
