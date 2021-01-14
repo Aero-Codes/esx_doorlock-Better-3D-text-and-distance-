@@ -1,378 +1,473 @@
 Config = {}
-Config.Locale = 'en'
-
-Config.Draw3DText = "~r~Locked~r~"
-Config.Draw3DTexts = "Press ~g~[E]~s~ for ~y~Unlock~s~"
-
 Config.DoorList = {
 
-	--
-	-- Mission Row First Floor
-	--
-
-	-- Entrance Doors
+------------------------------------------
+--	MISSION ROW POLICE DEPARTMENT		--
+------------------------------------------
+	-- MRPD MAIN ENTRANCE
 	{
-		textCoords = vector3(434.7, -982.0, 31.5),
-		authorizedJobs = { 'police' },
+		authorizedJobs = { 'police', 'offpolice' },
 		locked = false,
-		distance = 2.5,
+		maxDistance = 2.5,
 		doors = {
-			{
-				objName = 'v_ilev_ph_door01',
-				objYaw = -90.0,
-				objCoords = vector3(434.7, -980.6, 30.8)
-			},
-
-			{
-				objName = 'v_ilev_ph_door002',
-				objYaw = -90.0,
-				objCoords = vector3(434.7, -983.2, 30.8)
-			}
-		}
-	},
-
-	-- To locker room & roof
-	{
-		objName = 'v_ilev_ph_gendoor004',
-		objYaw = 90.0,
-		objCoords  = vector3(449.6, -986.4, 30.6),
-		textCoords = vector3(450.1, -986.3, 31.7),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-
-	-- Rooftop
-	{
-		objName = 'v_ilev_gtdoor02',
-		objYaw = 90.0,
-		objCoords  = vector3(464.3, -984.6, 43.8),
-		textCoords = vector3(464.3, -984.0, 44.8),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-
-	-- Hallway to roof
-	{
-		objName = 'v_ilev_arm_secdoor',
-		objYaw = 90.0,
-		objCoords  = vector3(461.2, -985.3, 30.8),
-		textCoords = vector3(461.5, -986.0, 31.5),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-
-	-- Armory
-	{
-		objName = 'v_ilev_arm_secdoor',
-		objYaw = -90.0,
-		objCoords  = vector3(452.6, -982.7, 30.6),
-		textCoords = vector3(453.0, -982.6, 31.7),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-
-	-- Captain Office
-	{
-		objName = 'v_ilev_ph_gendoor002',
-		objYaw = -180.0,
-		objCoords  = vector3(447.2, -980.6, 30.6),
-		textCoords = vector3(447.2, -980.0, 31.7),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-
-	-- To downstairs (double doors)
-	{
-		textCoords = vector3(444.6, -989.4, 31.7),
-		authorizedJobs = { 'police' },
-		locked = true,
-		distance = 4,
-		doors = {
-			{
-				objName = 'v_ilev_ph_gendoor005',
-				objYaw = 180.0,
-				objCoords = vector3(443.9, -989.0, 30.6)
-			},
-
-			{
-				objName = 'v_ilev_ph_gendoor005',
-				objYaw = 0.0,
-				objCoords = vector3(445.3, -988.7, 30.6)
-			}
-		}
-	},
-
-	--
-	-- Mission Row Cells
-	--
-
-	-- Main Cells
-	{
-		objName = 'v_ilev_ph_cellgate',
-		objYaw = 0.0,
-		objCoords  = vector3(463.8, -992.6, 24.9),
-		textCoords = vector3(463.3, -992.6, 25.1),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-
-	-- Cell 1
-	{
-		objName = 'v_ilev_ph_cellgate',
-		objYaw = -90.0,
-		objCoords  = vector3(462.3, -993.6, 24.9),
-		textCoords = vector3(461.8, -993.3, 25.0),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-
-	-- Cell 2
-	{
-		objName = 'v_ilev_ph_cellgate',
-		objYaw = 90.0,
-		objCoords  = vector3(462.3, -998.1, 24.9),
-		textCoords = vector3(461.8, -998.8, 25.0),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-
-	-- Cell 3
-	{
-		objName = 'v_ilev_ph_cellgate',
-		objYaw = 90.0,
-		objCoords  = vector3(462.7, -1001.9, 24.9),
-		textCoords = vector3(461.8, -1002.4, 25.0),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-
-	-- To Back
-	{
-		objName = 'v_ilev_gtdoor',
-		objYaw = 0.0,
-		objCoords  = vector3(463.4, -1003.5, 25.0),
-		textCoords = vector3(464.0, -1003.5, 25.5),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-
-	--
-	-- Mission Row Back
-	--
-
-	-- Back (double doors)
-	{
-		textCoords = vector3(468.6, -1014.4, 27.1),
-		authorizedJobs = { 'police' },
-		locked = true,
-		distance = 4,
-		doors = {
-			{
-				objName = 'v_ilev_rc_door2',
-				objYaw = 0.0,
-				objCoords  = vector3(467.3, -1014.4, 26.5)
-			},
-
-			{
-				objName = 'v_ilev_rc_door2',
-				objYaw = 180.0,
-				objCoords  = vector3(469.9, -1014.4, 26.5)
-			}
-		}
-	},
-
-	-- Back Gate
-	{
-		objName = 'hei_prop_station_gate',
-		objYaw = 90.0,
-		objCoords  = vector3(488.8, -1017.2, 27.1),
-		textCoords = vector3(488.8, -1020.2, 30.0),
-		authorizedJobs = { 'police' },
-		locked = true,
-		distance = 14,
-		size = 2
-	},
-
-	--
-	-- Sandy Shores
-	--
-
-	-- Entrance
-	{
-		objName = 'v_ilev_shrfdoor',
-		objYaw = 30.0,
-		objCoords  = vector3(1855.1, 3683.5, 34.2),
-		textCoords = vector3(1855.1, 3683.5, 35.0),
-		authorizedJobs = { 'police' },
-		locked = false
-	},
-
-	--
-	-- Paleto Bay
-	--
-
-	-- Entrance (double doors)
-	{
-		textCoords = vector3(-443.5, 6016.3, 32.0),
-		authorizedJobs = { 'police' },
-		locked = false,
-		distance = 2.5,
-		doors = {
-			{
-				objName = 'v_ilev_shrf2door',
-				objYaw = -45.0,
-				objCoords  = vector3(-443.1, 6015.6, 31.7),
-			},
-
-			{
-				objName = 'v_ilev_shrf2door',
-				objYaw = 135.0,
-				objCoords  = vector3(-443.9, 6016.6, 31.7)
-			}
-		}
-	},
-
-	--
-	-- Bolingbroke Penitentiary
-	--
-
-	-- Entrance (Two big gates)
-	{
-		objName = 'prop_gate_prison_01',
-		objCoords  = vector3(1844.9, 2604.8, 44.6),
-		textCoords = vector3(1844.9, 2608.5, 48.0),
-		authorizedJobs = { 'police' },
-		locked = true,
-		distance = 12,
-		size = 2
-	},
-
-	{
-		objName = 'prop_gate_prison_01',
-		objCoords  = vector3(1818.5, 2604.8, 44.6),
-		textCoords = vector3(1818.5, 2608.4, 48.0),
-		authorizedJobs = { 'police' },
-		locked = true,
-		distance = 12,
-		size = 2
-	},
-	
--- Double doors for extended PD
-	{
-	        textCoords = vector3(465.55, -990.00, 25.00),
-	        authorizedJobs = { 'police' },
-	        locked = true,
-	        distance = 4,
-	        doors = {
-		{
-		objName = 'v_ilev_ph_gendoor005',
-		objYaw = 90.0,
-		objCoords = vector3(465.55, -989.45, 24.91)
+			{objHash = -1215222675, objHeading = 270.0, objCoords = vector3(434.7479, -980.6184, 30.83927)},
+			{objHash = 320433149, objHeading = 270.0, objCoords = vector3(434.7479, -983.2151, 30.83927)}
 		},
+		
+	},
 
-		{
-		objName = 'v_ilev_ph_gendoor005',
-		objYaw = -90.0,
-		objCoords = vector3(465.60, -990.63, 24.91)
+	-- MRPD BACK ENTRANCE
+	{
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 2.5,
+		doors = {
+			{objHash = -2023754432, objHeading = 180.0, objCoords = vector3(469.968, -1014.452, 26.53624)},
+			{objHash = -2023754432, objHeading = 0.0, objCoords = vector3(467.3716, -1014.452, 26.53624)}
 		}
-	}
 	},
 
-	-- Cell 4 (Left 1)
+	-- MRPD BACK ENTRANCE INSIDE
 	{
-		objName = 'v_ilev_ph_cellgate',
-		objCoords  = vector3(466.03, -998.55, 24.9149),
-		textCoords = vector3(466.02, -998.75, 25.064),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-
-	-- Cell 5 (Left 2)
-	{
-		objName = 'v_ilev_ph_cellgate',
-		objCoords  = vector3(466.12, -1002.16, 24.9149),
-		textCoords = vector3(466.02, -1002.35, 25.064),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-
-	-- Interrogation wing cell left
-	{
-		objName = 'v_ilev_ph_cellgate',
-		objCoords  = vector3(482.02, -988.35, 24.91),
-		textCoords = vector3(481.6, -988.35, 25.064),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-
-	-- Interrogation wing cell right
-	{
-	objName = 'v_ilev_ph_cellgate',
-		objCoords  = vector3(481.86, -991.61, 24.91),
-		textCoords = vector3(481.46, -991.61, 25.064),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-
-	-- To interrogation observation room left
-	{
-		objName = 'v_ilev_ph_gendoor005',
-		objCoords  = vector3(472.01, -988.3, 24.91),
-		textCoords = vector3(472.01, -988.3, 24.91),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-	-- To interrogation room left
-	{
-		objName = 'v_ilev_ph_gendoor005',
-		objCoords  = vector3(477.52, -988.44, 24.91),
-		textCoords = vector3(477.52, -988.44, 24.91),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-	-- To interrogation observation room right
-	{
-		objName = 'v_ilev_ph_gendoor005',
-		objCoords  = vector3(472.02, -991.62, 24.91),
-		textCoords = vector3(472.02, -991.62, 24.91),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-	-- To interrogation room right
-	{
-		objName = 'v_ilev_ph_gendoor005',
-		objCoords  = vector3(477.56, -991.56, 24.91),
-		textCoords = vector3(477.56, -991.56, 24.91),
-		authorizedJobs = { 'police' },
-		locked = true
-	},
-	
-	--[[ principal bank
-	{
-		objName = 'hei_v_ilev_bk_gate2_pris',
-		objCoords  = vector3(261.99899291992, 221.50576782227, 106.68346405029),
-		textCoords = vector3(261.99899291992, 221.50576782227, 107.68346405029),
+		objHash = -1033001619,
+		objHeading = 0.0,
+		objCoords = vector3(464.5784, -1003.538, 25.00599),
 		authorizedJobs = { 'police' },
 		locked = true,
-		distance = 12,
-		size = 2
-	}--]]
+		maxDistance = 1.5,
+		flip = true
+	},
 
-
-	--
-	-- Addons
-	--
-
-	--[[
-	-- Entrance Gate (Mission Row mod) https://www.gta5-mods.com/maps/mission-row-pd-ymap-fivem-v1
+	-- MRPD BACK GATE
 	{
-		objName = 'prop_gate_airport_01',
-		objCoords  = vector3(420.1, -1017.3, 28.0),
-		textCoords = vector3(420.1, -1021.0, 32.0),
+		objHash = -1603817716,
+		objHeading = 90,
+		objCoords = vector3(488.8948, -1017.21, 27.14863),
 		authorizedJobs = { 'police' },
 		locked = true,
-		distance = 14,
-		size = 2
-	}
-	--]]
+		maxDistance = 8.0,
+		slides = true,
+		auto = true
+	},
+
+	-- MRPD LOCKER ROOMS
+	{
+		objHash = 1557126584,
+		objHeading = 90.0,
+		objCoords = vector3(450.1042, -985.7384, 30.83931),
+		authorizedJobs = { 'police', 'offpolice' },
+		locked = true,
+		maxDistance = 1.5
+	},
+
+	-- MRPD OUTSIDE BALCONY
+	{
+		objHash = 507213820,
+		objHeading = 0.0,
+		objCoords = vector3(464.1584, -1011.26, 33.01121),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+	},
+
+	-- MRPD DOOR TO STAIRWELL AND ROOF
+	{
+		objHash = 749848321,
+		objHeading = 90.0,
+		objCoords = vector3(461.2865, -985.3206, 30.83927),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+	},
+
+	-- MRPD CAPTAIN'S OFFICE
+	{
+		objHash = -1320876379,
+		objHeading = 180.0,
+		objCoords = vector3(446.5728, -980.0106, 30.83931),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- MRPD ARMOURY
+	{
+		objHash = -1033001619,
+		objHeading = 90.0,
+		objCoords = vector3(453.0938, -983.2294, 30.83927),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- MRPD ROOFTOP
+	{
+		objHash = -340230128,
+		objHeading = 90.0,
+		objCoords = vector3(464.3614, -984.678, 43.83444),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- MRPD MUGSHOT ROOM
+	{
+		objHash = -131296141,
+		objHeading = 180.0,
+		objCoords = vector3(442.6625, -988.2413, 26.81977),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- MRPD STORAGE
+	{
+		objHash = -131296141,
+		objHeading = 270.0,
+		objCoords = vector3(471.3154, -986.1091, 25.05795),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true,
+		auto = true
+	},
+
+	-- MRPD SERVER
+	{
+		objHash = -131296141,
+		objHeading = 180.0,
+		objCoords = vector3(467.5936, -977.9933, 25.05795),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- MRPD LABORATORY
+	{
+		objHash = -131296141,
+		objHeading = 90.0,
+		objCoords = vector3(463.6146, -980.5814, 25.05795),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+	},
+
+	-- MRPD CELL ACCESS
+	{
+		objHash = 631614199,
+		objHeading = 0.0,
+		objCoords = vector3(464.5702, -992.6641, 25.06443),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+	},
+
+	-- MRPD NORMAL CELL 1
+	{
+		objHash = 631614199,
+		objHeading = 270.0,
+		objCoords = vector3(461.8065, -994.4086, 25.06443),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- MRPD NORMAL  CELL 2
+	{
+		objHash = 631614199,
+		objHeading = 90.0,
+		objCoords = vector3(461.8065, -997.6584, 25.06443),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+	},
+
+	-- MRPD NORMAL  CELL 3
+	{
+		objHash = 631614199,
+		objHeading = 90.0,
+		objCoords = vector3(461.8065, -1001.302, 25.06443),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+	},
+
+	-- MRPD CELL 1
+	{
+		objHash = -1033001619,
+		objHeading = 0.0,
+		objCoords = vector3(467.1922, -996.4594, 25.00599),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- MRPD CELL 2
+	{
+		objHash = -1033001619,
+		objHeading = 0.0,
+		objCoords = vector3(471.4755, -996.4594, 25.00599),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- MRPD CELL 3
+	{
+		objHash = -1033001619,
+		objHeading = 0.0,
+		objCoords = vector3(475.7543, -996.4594, 25.00599),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- MRPD CELL 4
+	{
+		objHash = -1033001619,
+		objHeading = 0.0,
+		objCoords = vector3(480.0301, -996.4594, 25.00599),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- MRPD INTERVIEW 1
+	{
+		objHash = -1033001619,
+		objHeading = 180.0,
+		objCoords = vector3(468.4872, -1003.548, 25.01314),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+	},
+
+	-- MRPD INTERVIEW 1.5
+	{
+		objHash = -1033001619,
+		objHeading = 0.0,
+		objCoords = vector3(471.4747, -1003.538, 25.01223),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- MRPD INTERVIEW 2
+	{
+		objHash = -1033001619,
+		objHeading = 180.0,
+		objCoords = vector3(477.0497, -1003.553, 25.01203),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+	},
+
+	-- MRPD INTERVIEW 2.5
+	{
+		objHash = -1033001619,
+		objHeading = 0.0,
+		objCoords = vector3(480.0301, -1003.538, 25.00599),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- MRPD LOBBY DOUBLE DOORS
+	{
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 2.5,
+		doors = {
+			{objHash = 185711165, objHeading = 180.0, objCoords = vector3(443.4078, -989.4454, 30.83931)},
+			{objHash = 185711165, objHeading = 0.0, objCoords = vector3(446.008, -989.4454, 30.83931)}
+		}
+	},
+
+	-- MRPD DOUBLE DOORS TO PARKING
+	{
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 2.5,
+		doors = {
+			{objHash = -1033001619, objHeading = 180.0, objCoords = vector3(447.2184, -999.0023, 30.78942)},
+			{objHash = -1033001619, objHeading = 0.0, objCoords = vector3(444.6212, -999.001, 30.78866)}
+		}
+	},
+
+
+
+
+
+------------------------------------------
+--	BOLINGBROKE PENITENTIARY			--
+------------------------------------------
+
+	-- PRISON RECEPTION ENTRANCE
+	{
+		objHash = -1033001619,
+		objHeading = 90.0,
+		objCoords = vector3(1845.198, 2585.24, 46.09929),
+		authorizedJobs = { 'police' },
+		locked = false,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- PRISON RECEPTION DESK
+	{
+		objHash = -1033001619,
+		objHeading = 270.0,
+		objCoords = vector3(1837.714, 2595.185, 46.09929),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = false
+	},
+
+	-- PRISON RECEPTION STORAGE
+	{
+		objHash = -1033001619,
+		objHeading = 90.0,
+		objCoords = vector3(1834.002, 2591.111, 46.09929),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- PRISON RECEPTION STORAGE
+	{
+		objHash = -1033001619,
+		objHeading = 90.0,
+		objCoords = vector3(1834.002, 2591.111, 46.09929),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- PRISON RECEPTION HALLWAY
+	{
+		objHash = -1033001619,
+		objHeading = 90.0,
+		objCoords = vector3(1837.697, 2585.24, 46.09929),
+		authorizedJobs = { 'police' },
+		locked = false,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- PRISON RECEPTION 2
+	{
+		objHash = -1033001619,
+		objHeading = 0.0,
+		objCoords = vector3(1827.726, 2584.6, 46.09929),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- PRISON RECEPTION HALLWAY EXIT
+	{
+		objHash = -1033001619,
+		objHeading = 90.0,
+		objCoords = vector3(1826.466, 2585.271, 46.09929),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- PRISON RECEPTION HALLWAY 2
+	{
+		objHash = -1033001619,
+		objHeading = 0.0,
+		objCoords = vector3(1827.365, 2587.547, 46.09929),
+		authorizedJobs = { 'police' },
+		locked = false,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- PRISON RECEPTION HALLWAY 2 EXIT
+	{
+		objHash = -1033001619,
+		objHeading = 90.0,
+		objCoords = vector3(1819.129, 2593.64, 46.09929),
+		authorizedJobs = { 'police' },
+		locked = false,
+		maxDistance = 1.5,
+		flip = true
+	},
+
+	-- PRISON OUTSIDE A2 GATE 1
+	{
+		objHash = -1156020871,
+		objHeading = 180.0,
+		objCoords = vector3(1798.09, 2591.687, 46.41784),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+	},
+
+	-- PRISON OUTSIDE A2 GATE 2
+	{
+		objHash = -1156020871,
+		objHeading = 180.0,
+		objCoords = vector3(1797.761, 2596.565, 46.38731),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+	},
+
+	-- DELETE PRISON A2 CELL DOOR
+	{
+		objHash = 430324891,
+		objHeading = 160.0,
+		objCoords = vector3(1785.807, 2590.021, 44.79644),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 0.5,
+		delete = true
+	},
+
+	-- DELETE PRISON A2 ENTRANCE DOUBLE DOORS
+	{
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 2.5,
+		doors = {
+			{objHash = 262839150, objHeading = 270.0, objCoords = vector3(1791.114, 2592.504, 46.31247)},
+			{objHash = 1645000677, objHeading = 90.0, objCoords = vector3(1791.063, 2595.103, 46.31176)}
+		},
+		delete = true
+	},
+
+
+
+	-- DELETE MRPD DOUBLE DOORS TO PARKING
+	{
+		authorizedJobs = { 'police' },
+		delete = true,
+		maxDistance = 2.5,
+		doors = {
+			{objHash = -2023754432, objHeading = 0.0, objCoords = vector3(444.6294, -997.0447, 30.84352)},
+			{objHash = -2023754432, objHeading = 180.0, objCoords = vector3(447.2303, -997.0447, 30.84352)}
+		},
+		
+	},
+
 }
