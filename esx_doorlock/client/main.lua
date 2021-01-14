@@ -177,7 +177,7 @@ Citizen.CreateThread(function()
 		playerCoords = GetEntityCoords(PlayerPedId())
 		if closestK and closestV and closestD then
 			closestD = #(closestV.textCoords - playerCoords)
-			if closestD < closestV.maxDistance then
+			if closestD < closestV.maxDistance and not closestV.auto then
 				if closestV.locked then DrawText3D(closestV.textCoords, '~s~Locked~s~', 1) end
 				if IsControlJustReleased(0, 38) and closestA then
 					closestV.locked = not closestV.locked
