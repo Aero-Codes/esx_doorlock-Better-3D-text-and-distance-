@@ -151,10 +151,8 @@ Citizen.CreateThread(function()
 					for k2,v2 in ipairs(v.doors) do
 						if v.locked then
 							if v2.objHeading and tonumber(round(GetEntityHeading(v2.object))..'.0') == v2.objHeading then
-								if not IsEntityStatic(v2.object) then
-									FreezeEntityPosition(v2.object, 1)
-									SetEntityRotation(v2.object, 0.0, 0.0, v2.objHeading, 2, true)
-								end
+								FreezeEntityPosition(v2.object, 1)
+								SetEntityRotation(v2.object, 0.0, 0.0, v2.objHeading, 2, true)
 							end
 						else
 							if v2.objHeading and tonumber(round(GetEntityHeading(v2.object))..'.0') == v2.objHeading then
@@ -168,16 +166,12 @@ Citizen.CreateThread(function()
 					if v.slides and v.locked then
 						coords = GetEntityCoords(v.object)
 						if round2(v.objCoords.x) == round2(coords.x) and round2(v.objCoords.y) == round2(coords.y) and round2(v.objCoords.z) == round2(coords.z) then
-							if not IsEntityStatic(v.object) then
-								FreezeEntityPosition(v.object, 1)
-							end
+							FreezeEntityPosition(v.object, 1)
 						end
 					elseif v.locked and not v.slides then
 						if v.objHeading and tonumber(round(GetEntityHeading(v.object))..'.0') == v.objHeading then
-							if not IsEntityStatic(v.object) then
-								FreezeEntityPosition(v.object, 1)
-								SetEntityRotation(v.object, 0.0, 0.0, v.objHeading, 2, true)
-							end
+							FreezeEntityPosition(v.object, 1)
+							SetEntityRotation(v.object, 0.0, 0.0, v.objHeading, 2, true)
 						end
 					else
 						if v.objHeading and tonumber(round(GetEntityHeading(v.object))..'.0') == v.objHeading then
