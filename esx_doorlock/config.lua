@@ -46,7 +46,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 8.0,
-		slides = true
+		slides = true,
 	},
 
 	-- MRPD LOCKER ROOMS
@@ -115,7 +115,7 @@ Config.DoorList = {
 	-- MRPD MUGSHOT ROOM
 	{
 		objHash = -131296141,
-		objHeading = 180.0,
+		objHeading = 179.0,
 		objCoords = vector3(442.6625, -988.2413, 26.81977),
 		authorizedJobs = { 'police' },
 		locked = true,
@@ -303,158 +303,6 @@ Config.DoorList = {
 			{objHash = -1033001619, objHeading = 0.0, objCoords = vector3(444.6212, -999.001, 30.78866)}
 		}
 	},
-
-
-
-
-
-------------------------------------------
---	BOLINGBROKE PENITENTIARY			--
-------------------------------------------
-
-	-- PRISON RECEPTION ENTRANCE
-	{
-		objHash = -1033001619,
-		objHeading = 90.0,
-		objCoords = vector3(1845.198, 2585.24, 46.09929),
-		authorizedJobs = { 'police' },
-		locked = false,
-		maxDistance = 1.5,
-		flip = true
-	},
-
-	-- PRISON RECEPTION DESK
-	{
-		objHash = -1033001619,
-		objHeading = 270.0,
-		objCoords = vector3(1837.714, 2595.185, 46.09929),
-		authorizedJobs = { 'police' },
-		locked = true,
-		maxDistance = 1.5,
-		flip = false
-	},
-
-	-- PRISON RECEPTION STORAGE
-	{
-		objHash = -1033001619,
-		objHeading = 90.0,
-		objCoords = vector3(1834.002, 2591.111, 46.09929),
-		authorizedJobs = { 'police' },
-		locked = true,
-		maxDistance = 1.5,
-		flip = true
-	},
-
-	-- PRISON RECEPTION STORAGE
-	{
-		objHash = -1033001619,
-		objHeading = 90.0,
-		objCoords = vector3(1834.002, 2591.111, 46.09929),
-		authorizedJobs = { 'police' },
-		locked = true,
-		maxDistance = 1.5,
-		flip = true
-	},
-
-	-- PRISON RECEPTION HALLWAY
-	{
-		objHash = -1033001619,
-		objHeading = 90.0,
-		objCoords = vector3(1837.697, 2585.24, 46.09929),
-		authorizedJobs = { 'police' },
-		locked = false,
-		maxDistance = 1.5,
-		flip = true
-	},
-
-	-- PRISON RECEPTION 2
-	{
-		objHash = -1033001619,
-		objHeading = 0.0,
-		objCoords = vector3(1827.726, 2584.6, 46.09929),
-		authorizedJobs = { 'police' },
-		locked = true,
-		maxDistance = 1.5,
-		flip = true
-	},
-
-	-- PRISON RECEPTION HALLWAY EXIT
-	{
-		objHash = -1033001619,
-		objHeading = 90.0,
-		objCoords = vector3(1826.466, 2585.271, 46.09929),
-		authorizedJobs = { 'police' },
-		locked = true,
-		maxDistance = 1.5,
-		flip = true
-	},
-
-	-- PRISON RECEPTION HALLWAY 2
-	{
-		objHash = -1033001619,
-		objHeading = 0.0,
-		objCoords = vector3(1827.365, 2587.547, 46.09929),
-		authorizedJobs = { 'police' },
-		locked = false,
-		maxDistance = 1.5,
-		flip = true
-	},
-
-	-- PRISON RECEPTION HALLWAY 2 EXIT
-	{
-		objHash = -1033001619,
-		objHeading = 90.0,
-		objCoords = vector3(1819.129, 2593.64, 46.09929),
-		authorizedJobs = { 'police' },
-		locked = false,
-		maxDistance = 1.5,
-		flip = true
-	},
-
-	-- PRISON OUTSIDE A2 GATE 1
-	{
-		objHash = -1156020871,
-		objHeading = 180.0,
-		objCoords = vector3(1798.09, 2591.687, 46.41784),
-		authorizedJobs = { 'police' },
-		locked = true,
-		maxDistance = 1.5,
-	},
-
-	-- PRISON OUTSIDE A2 GATE 2
-	{
-		objHash = -1156020871,
-		objHeading = 180.0,
-		objCoords = vector3(1797.761, 2596.565, 46.38731),
-		authorizedJobs = { 'police' },
-		locked = true,
-		maxDistance = 1.5,
-	},
-
-	-- DELETE PRISON A2 CELL DOOR
-	{
-		objHash = 430324891,
-		objHeading = 160.0,
-		objCoords = vector3(1785.807, 2590.021, 44.79644),
-		authorizedJobs = { 'police' },
-		locked = true,
-		maxDistance = 0.5,
-		delete = true
-	},
-
-	-- DELETE PRISON A2 ENTRANCE DOUBLE DOORS
-	{
-		authorizedJobs = { 'police' },
-		locked = true,
-		maxDistance = 2.5,
-		doors = {
-			{objHash = 262839150, objHeading = 270.0, objCoords = vector3(1791.114, 2592.504, 46.31247)},
-			{objHash = 1645000677, objHeading = 90.0, objCoords = vector3(1791.063, 2595.103, 46.31176)}
-		},
-		delete = true
-	},
-
-
 
 	-- DELETE MRPD DOUBLE DOORS TO PARKING
 	{
