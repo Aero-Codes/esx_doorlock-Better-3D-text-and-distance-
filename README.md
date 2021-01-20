@@ -2,10 +2,11 @@
 
 Now checks for doors set in config and assigns text coordinates automatically.  
 Ignores doors that are not in range.  
-Seperated entityfreeze and control check to reduce functions being performed.  
+Seperated into three threads to reduce number of functions being performed.   
 Doors will lock once the door swing is complete.  
 Support for sliding doors (gates).  
 Improved cpu usage.
+Animation when interacting with doors.  
 
 
 
