@@ -14,7 +14,7 @@ Master = Original release of esx_doorlock
 Old = Code I started working from  
 
 Standing away from doors  
-<img src='https://i.imgur.com/qZmYLHS.png'/>
+<img src='https://i.imgur.com/OMZ5Ou6.png'/>
 
 Standing near an unlocked door (with 'Unlocked' text display)  
 <img src='https://i.imgur.com/mFPFy79.png'/>
