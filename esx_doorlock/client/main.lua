@@ -155,13 +155,13 @@ Citizen.CreateThread(function()
 									FreezeEntityPosition(v2.object, 1)
 									SetEntityRotation(v2.object, 0.0, 0.0, v2.objHeading, 2, true)
 								end
-							else
-								FreezeEntityPosition(v2.object, 0)
-								letSleep = false
 							end
 						else
-							FreezeEntityPosition(v2.object, 0)
-							letSleep = false
+							if v2.objHeading and tonumber(round(GetEntityHeading(v2.object))..'.0') == v2.objHeading then
+								FreezeEntityPosition(v2.object, 0)
+								letSleep = true
+								sleepLen = 50
+							else letSleep = false end
 						end
 					end
 				else
@@ -171,9 +171,6 @@ Citizen.CreateThread(function()
 							if not IsEntityStatic(v.object) then
 								FreezeEntityPosition(v.object, 1)
 							end
-						else
-							FreezeEntityPosition(v.object, 0)
-							letSleep = false
 						end
 					elseif v.locked and not v.slides then
 						if v.objHeading and tonumber(round(GetEntityHeading(v.object))..'.0') == v.objHeading then
@@ -183,8 +180,11 @@ Citizen.CreateThread(function()
 							end
 						end
 					else
-						FreezeEntityPosition(v.object, 0)
-						letSleep = false
+						if v.objHeading and tonumber(round(GetEntityHeading(v.object))..'.0') == v.objHeading then
+							FreezeEntityPosition(v.object, 0)
+							letSleep = true
+							sleepLen = 50
+						else letSleep = false end
 					end
 				end
 			end
