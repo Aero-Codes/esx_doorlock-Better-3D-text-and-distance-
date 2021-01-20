@@ -25,16 +25,42 @@ function DrawText3D(coords, text, size)
     local px,py,pz=table.unpack(GetGameplayCamCoords())
     
     SetTextScale(0.35, 0.35)
-	SetTextFont(6)
-	SetTextOutline()
+	SetTextFont(4)
+	SetTextDropShadow()
     SetTextProportional(1.2)
-    SetTextColour(255, 255, 255, 100)
+    SetTextColour(255, 255, 255, 150)
     SetTextEntry("STRING")
     SetTextCentre(1)
     AddTextComponentString(text)
     DrawText(_x,_y)
-    local factor = (string.len(text)) / 370
+	local factor = (string.len(text)) / 370
 end
+
+function loadAnimDict(dict)
+    while (not HasAnimDictLoaded(dict)) do
+        RequestAnimDict(dict)
+        Citizen.Wait(5)
+    end
+end
+
+RegisterNetEvent('dooranim')
+AddEventHandler('dooranim', function(entity, turn)
+	if turn then
+		local coords = GetEntityCoords(entity)
+		TaskTurnPedToFaceCoord(playerPed, vector3(coords), -1)
+		Citizen.Wait(250)
+		while true do
+			Citizen.Wait(0)
+			local rotation = #(GetEntityRotationVelocity(playerPed))
+			if rotation == 0 then break end
+		end
+	end
+    ClearPedSecondaryTask(playerPed)
+    loadAnimDict("anim@heists@keycard@") 
+    TaskPlayAnim(playerPed, "anim@heists@keycard@", "exit", 8.0, 1.0, -1, 16, 0, 0, 0, 0)
+    Citizen.Wait(550)
+    ClearPedTasks(playerPed)
+end)
 
 RegisterNetEvent('esx:setJob')
 AddEventHandler('esx:setJob', function(job)
@@ -51,11 +77,9 @@ function round2(num)
 end
 
 Citizen.CreateThread(function()
-	while not playerCoords do
-		Citizen.Wait(50)
-	end
 	while true do
 		Citizen.Wait(0)
+		playerPed = PlayerPedId()
 		local d, distance = 0, 0
 		for _,doorID in ipairs(Config.DoorList) do
 
@@ -121,14 +145,16 @@ Citizen.CreateThread(function()
 		for k,v in ipairs(Config.DoorList) do
 			local isAuthorized = IsAuthorized(v)
 			if v.textCoords then distance = #(v.textCoords - playerCoords) end
-			if v.distanceToPlayer and distance < (v.maxDistance * 3) then
+			if v.distanceToPlayer and distance < (v.maxDistance * 2) then
 				sleepLen = 100
 				if v.doors then
 					for k2,v2 in ipairs(v.doors) do
 						if v.locked then
 							if v2.objHeading and tonumber(round(GetEntityHeading(v2.object))..'.0') == v2.objHeading then
-								FreezeEntityPosition(v2.object, 1)
-								SetEntityRotation(v2.object, 0.0, 0.0, v2.objHeading, 2, true)
+								if not IsEntityStatic(v2.object) then
+									FreezeEntityPosition(v2.object, 1)
+									SetEntityRotation(v2.object, 0.0, 0.0, v2.objHeading, 2, true)
+								end
 							else
 								FreezeEntityPosition(v2.object, 0)
 								letSleep = false
@@ -142,15 +168,19 @@ Citizen.CreateThread(function()
 					if v.slides and v.locked then
 						coords = GetEntityCoords(v.object)
 						if round2(v.objCoords.x) == round2(coords.x) and round2(v.objCoords.y) == round2(coords.y) and round2(v.objCoords.z) == round2(coords.z) then
-							FreezeEntityPosition(v.object, 1)
+							if not IsEntityStatic(v.object) then
+								FreezeEntityPosition(v.object, 1)
+							end
 						else
 							FreezeEntityPosition(v.object, 0)
 							letSleep = false
 						end
 					elseif v.locked and not v.slides then
 						if v.objHeading and tonumber(round(GetEntityHeading(v.object))..'.0') == v.objHeading then
-							FreezeEntityPosition(v.object, 1)
-							SetEntityRotation(v.object, 0.0, 0.0, v.objHeading, 2, true)
+							if not IsEntityStatic(v.object) then
+								FreezeEntityPosition(v.object, 1)
+								SetEntityRotation(v.object, 0.0, 0.0, v.objHeading, 2, true)
+							end
 						end
 					else
 						FreezeEntityPosition(v.object, 0)
@@ -174,14 +204,16 @@ end)
 Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
-		playerCoords = GetEntityCoords(PlayerPedId())
+		playerCoords = GetEntityCoords(playerPed)
 		if closestK and closestV and closestD then
 			closestD = #(closestV.textCoords - playerCoords)
 			if closestD < closestV.maxDistance and not closestV.auto then
-				if closestV.locked then DrawText3D(closestV.textCoords, '~s~Locked~s~', 1) end
+				if not IsEntityStatic(closestV.object) and closestV.locked then DrawText3D(closestV.textCoords, 'Locking', 1)
+				elseif closestV.locked then DrawText3D(closestV.textCoords, 'Locked', 1) end
 				if IsControlJustReleased(0, 38) and closestA then
+					TriggerEvent("dooranim", closestV.object, closestV.locked)
 					closestV.locked = not closestV.locked
-					TriggerServerEvent('esx_doorlock:updateState', closestK, closestV.locked) -- Broadcast new state of the door to everyone
+					TriggerServerEvent('esx_doorlock:updateState', closestK, closestV) -- Broadcast new state of the door to everyone
 				end
 			else
 				closestK, closestV, closestD, closestA = nil, nil, nil, false
