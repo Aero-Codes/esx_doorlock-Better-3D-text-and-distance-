@@ -216,7 +216,7 @@ Citizen.CreateThread(function()
 					elseif closestV.locked then DrawText3D(closestV.textCoords, 'Locking', 1) end
 				end
 				if IsControlJustReleased(0, 38) and closestA then
-					TriggerEvent("dooranim", closestV.object, closestV.locked)
+					if not IsPedInAnyVehicle(playerPed) then TriggerEvent("dooranim", closestV.object, closestV.locked) end
 					closestV.locked = not closestV.locked
 					TriggerServerEvent('esx_doorlock:updateState', closestK, closestV) -- Broadcast new state of the door to everyone
 				end
