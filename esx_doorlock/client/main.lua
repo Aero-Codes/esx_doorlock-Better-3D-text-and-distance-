@@ -1,6 +1,7 @@
 ESX = nil
 playerCoords = nil
 closestK, closestV, closestD, closestA = nil, nil, nil, false
+unlockedtext = true
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -202,8 +203,16 @@ Citizen.CreateThread(function()
 		if closestK and closestV and closestD then
 			closestD = #(closestV.textCoords - playerCoords)
 			if closestD < closestV.maxDistance and not closestV.auto then
-				if not IsEntityStatic(closestV.object) and closestV.locked then DrawText3D(closestV.textCoords, 'Locking', 1)
-				elseif closestV.locked then DrawText3D(closestV.textCoords, 'Locked', 1) end
+				if not closestV.doors then
+					if not IsEntityStatic(closestV.object) and closestV.locked then DrawText3D(closestV.textCoords, 'Locking', 1)
+					elseif closestV.locked then DrawText3D(closestV.textCoords, 'Locked', 1) else if unlockedtext then DrawText3D(closestV.textCoords, 'Unlocked', 1) end end
+				else
+					local door = {}
+					for k2,v2 in ipairs(closestV.doors) do
+						if not IsEntityStatic(v2.object) and closestV.locked then door[k2] = 'Locking' elseif closestV.locked then door[k2] = 'Locked' elseif not closestV.locked then door[k2] = 'Unlocked' end
+					end
+					if door[1] == door[2] then DrawText3D(closestV.textCoords, door[1], 1) else DrawText3D(closestV.textCoords, 'Locking', 1) end
+				end
 				if IsControlJustReleased(0, 38) and closestA then
 					TriggerEvent("dooranim", closestV.object, closestV.locked)
 					closestV.locked = not closestV.locked
