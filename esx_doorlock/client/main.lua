@@ -154,7 +154,7 @@ Citizen.CreateThread(function()
 							if v2.objHeading and tonumber(round(GetEntityHeading(v2.object))..'.0') == v2.objHeading then
 								FreezeEntityPosition(v2.object, 1)
 								SetEntityRotation(v2.object, 0.0, 0.0, v2.objHeading, 2, true)
-							end
+							else letSleep = false end
 						else
 							if v2.objHeading and tonumber(round(GetEntityHeading(v2.object))..'.0') == v2.objHeading then
 								FreezeEntityPosition(v2.object, 0)
@@ -168,14 +168,12 @@ Citizen.CreateThread(function()
 						coords = GetEntityCoords(v.object)
 						if round2(v.objCoords.x) == round2(coords.x) and round2(v.objCoords.y) == round2(coords.y) and round2(v.objCoords.z) == round2(coords.z) then
 							FreezeEntityPosition(v.object, 1)
-						else
-							letSleep = false
-						end
+						else letSleep = false end
 					elseif v.locked and not v.slides then
 						if v.objHeading and tonumber(round(GetEntityHeading(v.object))..'.0') == v.objHeading then
 							FreezeEntityPosition(v.object, 1)
 							SetEntityRotation(v.object, 0.0, 0.0, v.objHeading, 2, true)
-						end
+						else letSleep = false end
 					else
 						if v.objHeading and tonumber(round(GetEntityHeading(v.object))..'.0') == v.objHeading then
 							FreezeEntityPosition(v.object, 0)
