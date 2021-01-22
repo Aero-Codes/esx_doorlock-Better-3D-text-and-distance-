@@ -115,7 +115,7 @@ Config.DoorList = {
 	-- MRPD MUGSHOT ROOM
 	{
 		objHash = -131296141,
-		objHeading = 179.0,
+		objHeading = 180.0,
 		objCoords = vector3(442.6625, -988.2413, 26.81977),
 		authorizedJobs = { 'police' },
 		locked = true,
