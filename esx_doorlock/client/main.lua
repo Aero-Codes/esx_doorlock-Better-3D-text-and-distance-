@@ -1,7 +1,7 @@
 ESX = nil
 playerCoords = nil
 closestK, closestV, closestD, closestA = nil, nil, nil, false
-unlockedtext = false
+unlockedtext = true
 
 Citizen.CreateThread(function()
 	while ESX == nil do
