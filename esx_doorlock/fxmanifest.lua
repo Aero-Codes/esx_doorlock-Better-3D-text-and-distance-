@@ -1,8 +1,8 @@
 fx_version 'cerulean'
 games { 'gta5' }
 
-description 'thelindat esx_doorlock'
-version '1.0.4'
+version '1.0.5'
+description 'https://github.com/thelindat/esx_doorlock'
 
 server_scripts {
 	'@es_extended/locale.lua',
