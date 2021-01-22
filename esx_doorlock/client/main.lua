@@ -1,7 +1,7 @@
 ESX = nil
 playerCoords = nil
 closestK, closestV, closestD, closestA = nil, nil, nil, false
-unlockedtext = true
+unlockedtext = false
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -168,6 +168,8 @@ Citizen.CreateThread(function()
 						coords = GetEntityCoords(v.object)
 						if round2(v.objCoords.x) == round2(coords.x) and round2(v.objCoords.y) == round2(coords.y) and round2(v.objCoords.z) == round2(coords.z) then
 							FreezeEntityPosition(v.object, 1)
+						else
+							letSleep = false
 						end
 					elseif v.locked and not v.slides then
 						if v.objHeading and tonumber(round(GetEntityHeading(v.object))..'.0') == v.objHeading then
@@ -184,10 +186,7 @@ Citizen.CreateThread(function()
 				end
 			end
 			if v.distanceToPlayer and distance < v.maxDistance then
-				closestK, closestV, closestD = k, v, #(v.textCoords - playerCoords)
-				if isAuthorized then
-					closestA = true
-				end
+				closestK, closestV, closestD, closestA = k, v, #(v.textCoords - playerCoords), isAuthorized
 			end
 		end
 		if letSleep then
