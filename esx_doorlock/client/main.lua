@@ -175,7 +175,8 @@ Citizen.CreateThread(function()
 							SetEntityRotation(v.object, 0.0, 0.0, v.objHeading, 2, true)
 						else letSleep = false end
 					else
-						if v.objHeading and tonumber(round(GetEntityHeading(v.object))..'.0') == v.objHeading then
+						local objVelocity = #(GetEntityRotationVelocity(v.object))
+						if objVelocity == 0.0 then
 							FreezeEntityPosition(v.object, 0)
 							letSleep = true
 							sleepLen = 50
