@@ -1,8 +1,11 @@
 Config = {}
+Config.ShowUnlockedText = true
+
 Config.DoorList = {
 
 ------------------------------------------
---	MISSION ROW POLICE DEPARTMENT		--
+--	COMMUNITY MISSION ROW PD
+--	https://www.gta5-mods.com/maps/community-mission-row-pd
 ------------------------------------------
 	-- MRPD MAIN ENTRANCE
 	{
@@ -98,7 +101,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true
+		flip = true,
 	},
 
 	-- MRPD ROOFTOP
