@@ -4,7 +4,7 @@ local doorInfo = {}
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 RegisterServerEvent('esx_doorlock:updateState')
-AddEventHandler('esx_doorlock:updateState', function(doorID, values)
+AddEventHandler('esx_doorlock:updateState', function(doorID, state)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	if type(doorID) ~= 'number' then
@@ -12,8 +12,8 @@ AddEventHandler('esx_doorlock:updateState', function(doorID, values)
 		return
 	end
 
-	if type(values.locked) ~= 'boolean' then
-		print(('esx_doorlock: %s attempted to update invalid state! (%s)'):format(xPlayer.identifier), values.locked)
+	if type(state) ~= 'boolean' then
+		print(('esx_doorlock: %s attempted to update invalid state! (%s)'):format(xPlayer.identifier), state)
 		return
 	end
 
@@ -27,8 +27,8 @@ AddEventHandler('esx_doorlock:updateState', function(doorID, values)
 		return
 	end
 
-	doorInfo[doorID] = values.locked
-	TriggerClientEvent('esx_doorlock:setState', -1, doorID, values.locked)
+	doorInfo[doorID] = state
+	TriggerClientEvent('esx_doorlock:setState', -1, doorID, state)
 end)
 
 ESX.RegisterServerCallback('esx_doorlock:getDoorInfo', function(source, cb)
