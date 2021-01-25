@@ -128,7 +128,7 @@ Citizen.CreateThread(function()
 		local letSleep, sleepLen, distance = true, 500, 0
 		for k,v in ipairs(Config.DoorList) do
 			local isAuthorized = IsAuthorized(v)
-			if v.textCoords then distance = #(v.textCoords - playerCoords) end
+			if v.setText then distance = #(v.textCoords - playerCoords) end
 			if v.distanceToPlayer and distance < (v.maxDistance * 2) then
 				sleepLen = 100
 				if v.doors then
