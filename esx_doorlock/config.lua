@@ -44,11 +44,11 @@ Config.DoorList = {
 	-- MRPD BACK GATE
 	{
 		objHash = -1603817716,
-		objHeading = 90,
+		objHeading = 90.0,
 		objCoords = vector3(488.8948, -1017.21, 27.14863),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 8.0,
+		maxDistance = 8,
 		slides = true,
 	},
 
@@ -65,7 +65,7 @@ Config.DoorList = {
 	-- MRPD OUTSIDE BALCONY
 	{
 		objHash = 507213820,
-		objHeading = 0.0,
+		objHeading = 0.2,
 		objCoords = vector3(464.1584, -1011.26, 33.01121),
 		authorizedJobs = { 'police' },
 		locked = true,
@@ -96,7 +96,7 @@ Config.DoorList = {
 	-- MRPD ARMOURY
 	{
 		objHash = -1033001619,
-		objHeading = 90.0,
+		objHeading = 90.6,
 		objCoords = vector3(453.0938, -983.2294, 30.83927),
 		authorizedJobs = { 'police' },
 		locked = true,
@@ -118,7 +118,7 @@ Config.DoorList = {
 	-- MRPD MUGSHOT ROOM
 	{
 		objHash = -131296141,
-		objHeading = 180.0,
+		objHeading = 179.0,
 		objCoords = vector3(442.6625, -988.2413, 26.81977),
 		authorizedJobs = { 'police' },
 		locked = true,
