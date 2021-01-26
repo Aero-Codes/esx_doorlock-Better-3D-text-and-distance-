@@ -64,57 +64,56 @@ Citizen.CreateThread(function()
 		playerPed = PlayerPedId()
 		local playerDistance = 0
 		for _,doorID in ipairs(Config.DoorList) do
-			if doorID.textCoords then
-				if doorID.setText then playerDistance = #(doorID.textCoords - playerCoords) end
-			end
-			if playerDistance < 80 then
-				if not doorID.setText and doorID.doors then
+			if doorID.setText then playerDistance = #(doorID.textCoords - playerCoords) end
+			if playerDistance < 50 then
+
+				-- Get object ids
+				if doorID.doors then
 					for k,v in ipairs(doorID.doors) do
-						if k == 1 then
+						doorID.exists = nil
+						v.object = GetClosestObjectOfType(v.objCoords, 1.0, v.objHash, false, false, false)
+						if doorID.delete and DoesEntityExist(v.object) then
+							SetEntityAsMissionEntity(v.object, 1, 1)
+							DeleteObject(v.object)
+							SetEntityAsNoLongerNeeded(v.object)
+						end
+						if v.object then doorID.exists = 1 end
+						if not doorID.textCoords then doorID.setText = false end
+					end
+				else
+					doorID.exists = nil
+					doorID.object = GetClosestObjectOfType(doorID.objCoords, 1.0, doorID.objHash, false, false, false)
+					if doorID.delete and DoesEntityExist(doorID.object) then
+						SetEntityAsMissionEntity(doorID.object, 1, 1)
+						DeleteObject(doorID.object)
+						SetEntityAsNoLongerNeeded(doorID.object)
+					end
+					if doorID.object then doorID.exists = 1 end
+					if not doorID.textCoords then doorID.setText = false end
+				end
+
+				-- set text coords
+				if not doorID.setText and doorID.doors and not doorID.delete then
+					for k,v in ipairs(doorID.doors) do
+						if k == 1 and doorID.exists then
 							doorID.textCoords = v.objCoords
-						else
+						elseif k == 2 and doorID.exists then
 							local textDistance = doorID.textCoords - v.objCoords
 							doorID.textCoords = (doorID.textCoords - (textDistance / 2))
 							doorID.setText = true
 						end
 					end
-				elseif not doorID.textCoords and DoesEntityExist(doorID.object) and not doorID.doors then
+				elseif not doorID.setText and not doorID.doors and doorID.exists then
 					local minDimension, maxDimension = GetModelDimensions(doorID.objHash)
-					if doorID.flip then dimensions = minDimension - maxDimension else dimensions = maxDimension - minDimension end
+					if doorID.fixText then dimensions = minDimension - maxDimension else dimensions = maxDimension - minDimension end
 					local dx, dy = tonumber(string.sub(dimensions.x, 1, 6)), tonumber(string.sub(dimensions.y, 1, 6))
 					local h = tonumber(string.sub(doorID.objHeading, 1, 1))
 					if h == 9 or h == 2 then dx, dy = dy, dx end
-					doorID.textCoords = GetEntityCoords(doorID.object) - vector3(dx/2, dy/2, 0)
+					local maths = vector3(dx/2, dy/2, 0)
+					doorID.textCoords = GetEntityCoords(doorID.object) - maths
 					doorID.setText = true
 				end
-				
-				if doorID.doors then
-					for k,v in ipairs(doorID.doors) do
-						if v.object and DoesEntityExist(v.object) and doorID.textCoords then
-							doorID.exists = 1
-						else
-							doorID.exists = nil
-							v.object = GetClosestObjectOfType(v.objCoords, 1.0, v.objHash, false, false, false)
-							if doorID.delete and DoesEntityExist(v.object) then
-								SetEntityAsMissionEntity(v.object, 1, 1)
-								DeleteObject(v.object)
-								SetEntityAsNoLongerNeeded(v.object)
-							end
-						end
-					end
-				else
-					if doorID.object and DoesEntityExist(doorID.object) then
-						doorID.exists = 1
-					else
-						doorID.exists = nil
-						doorID.object = GetClosestObjectOfType(doorID.objCoords, 1.0, doorID.objHash, false, false, false)
-						if doorID.delete and DoesEntityExist(doorID.object) then
-							SetEntityAsMissionEntity(doorID.object, 1, 1)
-							DeleteObject(doorID.object)
-							SetEntityAsNoLongerNeeded(doorID.object)
-						end
-					end
-				end
+
 			end
 		end
 		Citizen.Wait(1500)
@@ -166,7 +165,7 @@ Citizen.CreateThread(function()
 					end
 				end
 			end
-			if v.exists and distance < v.maxDistance then
+			if v.exists and v.setText and distance < v.maxDistance then
 				closestDoor, closestV, closestDistance, closestA = k, v, #(v.textCoords - playerCoords), isAuthorized
 			end
 		end
@@ -180,7 +179,7 @@ Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
 		playerCoords = GetEntityCoords(playerPed)
-		if closestDoor and closestV and closestDistance then
+		if closestDistance then
 			closestDistance = #(closestV.textCoords - playerCoords)
 			if closestDistance < closestV.maxDistance and not closestV.auto then
 				if not closestV.doors then
