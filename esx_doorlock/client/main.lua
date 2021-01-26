@@ -128,6 +128,8 @@ Citizen.CreateThread(function()
 				playerNotActive = nil
 				lastCoords = playerCoords
 				updateDoors()
+				Citizen.Wait(500)
+				updateDoors()
 			end
 		elseif not playerNotActive then
 			local distance = #(playerCoords - lastCoords)
