@@ -1,7 +1,7 @@
 fx_version 'cerulean'
 games { 'gta5' }
 
-version '1.2.1'
+version '1.2.2'
 description 'https://github.com/thelindat/esx_doorlock'
 
 server_scripts {
