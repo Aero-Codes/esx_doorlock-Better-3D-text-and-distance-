@@ -114,6 +114,7 @@ function updateDoors(useDistance)
 				local maths = vector3(dx/2, dy/2, 0)
 				doorID.textCoords = GetEntityCoords(doorID.object) - maths
 				doorID.setText = true
+				--print(doorID.textCoords)
 			end
 
 	end
@@ -131,8 +132,10 @@ Citizen.CreateThread(function()
 		elseif not playerNotActive then
 			local distance = #(playerCoords - lastCoords)
 			if distance > 30 then
-				lastCoords = playerCoords
+				Citizen.Wait(500)
 				updateDoors()
+				--print(distance)
+				lastCoords = playerCoords
 			end
 		end
 		Citizen.Wait(0)
