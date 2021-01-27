@@ -106,14 +106,19 @@ function updateDoors(useDistance)
 					end
 				end
 			elseif not doorID.setText and not doorID.doors and doorID.exists then
-				local minDimension, maxDimension = GetModelDimensions(doorID.objHash)
-				if doorID.fixText then dimensions = minDimension - maxDimension else dimensions = maxDimension - minDimension end
-				local dx, dy = tonumber(string.sub(dimensions.x, 1, 6)), tonumber(string.sub(dimensions.y, 1, 6))
-				local h = tonumber(string.sub(doorID.objHeading, 1, 1))
-				if h == 9 or h == 8 or h == 2 then dx, dy = dy, dx end
-				local maths = vector3(dx/2, dy/2, 0)
-				doorID.textCoords = GetEntityCoords(doorID.object) - maths
-				doorID.setText = true
+				if not doorID.garage then
+					local minDimension, maxDimension = GetModelDimensions(doorID.objHash)
+					if doorID.fixText then dimensions = minDimension - maxDimension else dimensions = maxDimension - minDimension end
+					local dx, dy = tonumber(string.sub(dimensions.x, 1, 6)), tonumber(string.sub(dimensions.y, 1, 6))
+					local h = tonumber(string.sub(doorID.objHeading, 1, 1))
+					if h == 9 or h == 8 or h == 2 then dx, dy = dy, dx end
+					local maths = vector3(dx/2, dy/2, 0)
+					doorID.textCoords = GetEntityCoords(doorID.object) - maths
+					doorID.setText = true
+				else
+					doorID.textCoords = GetEntityCoords(doorID.object)
+					doorID.setText = true
+				end
 				--print(doorID.textCoords)
 			end
 
@@ -172,7 +177,7 @@ Citizen.CreateThread(function()
 				else
 					if v.slides and v.locked then
 						coords = GetEntityCoords(v.object)
-						if round(v.objCoords.x, 2) == round(coords.x, 2) and round(v.objCoords.y, 2) == round(coords.y, 2) and round(v.objCoords.z, 2) == round(coords.z, 2) then
+						if round(#(coords - v.objCoords), 1) == 0.0 then
 							FreezeEntityPosition(v.object, 1)
 						else letSleep = false end
 					elseif v.locked and not v.slides then
