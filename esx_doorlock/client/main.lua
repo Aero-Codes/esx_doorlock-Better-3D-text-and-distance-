@@ -166,12 +166,10 @@ Citizen.CreateThread(function()
 								FreezeEntityPosition(v2.object, 1)
 								SetEntityRotation(v2.object, 0.0, 0.0, round(v2.objHeading, 1), 2, true)
 							else letSleep = false end
-						else
-							if v2.objHeading and round(GetEntityHeading(v2.object), 0) == round(v2.objHeading, 0) then
-								FreezeEntityPosition(v2.object, 0)
-								letSleep = true
-								sleepLen = 50
-							else letSleep = false end
+						elseif not v.locked then
+							FreezeEntityPosition(v2.object, 0)
+							letSleep = true
+							sleepLen = 50
 						end
 					end
 				else
@@ -214,14 +212,17 @@ Citizen.CreateThread(function()
 			closestDistance = #(closestV.textCoords - playerCoords)
 			if closestDistance < closestV.maxDistance and closestV.setText then
 				if not closestV.doors then
-					if not IsEntityStatic(closestV.object) and closestV.locked then DrawText3D(closestV.textCoords, 'Locking', 1)
+					if #GetEntityRotationVelocity(closestV.object) > 0 and closestV.locked then DrawText3D(closestV.textCoords, 'Locking', 1)
 					elseif closestV.locked then
 						DrawText3D(closestV.textCoords, 'Locked', 1)
-					else if Config.ShowUnlockedText then DrawText3D(closestV.textCoords, 'Unlocked', 1) end end
+					else
+						if Config.ShowUnlockedText then DrawText3D(closestV.textCoords, 'Unlocked', 1) end
+					end
 				else
 					local door = {}
 					for k2,v2 in ipairs(closestV.doors) do
-						if not IsEntityStatic(v2.object) and closestV.locked then door[k2] = 'Locking' elseif closestV.locked then door[k2] = 'Locked' elseif not closestV.locked and Config.ShowUnlockedText then door[k2] = 'Unlocked' end
+						local velocity = (#GetEntityRotationVelocity(v2.object))
+						if velocity > 0.0 and closestV.locked then door[k2] = 'Locking' elseif velocity == 0.0 and closestV.locked then door[k2] = 'Locked' elseif not closestV.locked and Config.ShowUnlockedText then door[k2] = 'Unlocked' end
 					end
 					if door[1] == door[2] and door[1] == 'Locked' then DrawText3D(closestV.textCoords, 'Locked', 1)
 					elseif not closestV.locked and Config.ShowUnlockedText then DrawText3D(closestV.textCoords, 'Unlocked', 1)
