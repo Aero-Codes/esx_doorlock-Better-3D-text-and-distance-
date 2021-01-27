@@ -7,6 +7,7 @@ Config.DoorList = {
 --	COMMUNITY MISSION ROW PD
 --	https://www.gta5-mods.com/maps/community-mission-row-pd
 ------------------------------------------
+
 	-- MRPD MAIN ENTRANCE
 	{
 		authorizedJobs = { 'police', 'offpolice' },
@@ -38,7 +39,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true
+		fixText = true
 	},
 
 	-- MRPD BACK GATE
@@ -50,6 +51,29 @@ Config.DoorList = {
 		locked = true,
 		maxDistance = 8,
 		slides = true,
+	},
+	
+	-- MRPD GARAGE 1
+	{
+		objHash = -190780785,
+		objHeading = 0.0,
+		objCoords = vector3(431.4056, -1001.169, 26.71261),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 5,
+		slides = true,
+		garage = true
+	},
+	-- MRPD GARAGE 2
+	{
+		objHash = -190780785,
+		objHeading = 0.0,
+		objCoords = vector3(436.2234, -1001.169, 26.71261),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 5,
+		slides = true,
+		garage = true
 	},
 
 	-- MRPD LOCKER ROOMS
@@ -90,7 +114,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true
+		fixText = true
 	},
 
 	-- MRPD ARMOURY
@@ -101,7 +125,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true,
+		fixText = true,
 	},
 
 	-- MRPD ROOFTOP
@@ -112,7 +136,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true
+		fixText = true
 	},
 
 	-- MRPD MUGSHOT ROOM
@@ -123,7 +147,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true
+		fixText = true
 	},
 
 	-- MRPD STORAGE
@@ -134,7 +158,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true
+		fixText = true
 	},
 
 	-- MRPD SERVER
@@ -145,7 +169,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true
+		fixText = true
 	},
 
 	-- MRPD LABORATORY
@@ -176,7 +200,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true
+		fixText = true
 	},
 
 	-- MRPD NORMAL  CELL 2
@@ -207,7 +231,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true
+		fixText = true
 	},
 
 	-- MRPD CELL 2
@@ -218,7 +242,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true
+		fixText = true
 	},
 
 	-- MRPD CELL 3
@@ -229,7 +253,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true
+		fixText = true
 	},
 
 	-- MRPD CELL 4
@@ -240,7 +264,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true
+		fixText = true
 	},
 
 	-- MRPD INTERVIEW 1
@@ -261,7 +285,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true
+		fixText = true
 	},
 
 	-- MRPD INTERVIEW 2
@@ -282,7 +306,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
-		flip = true
+		fixText = true
 	},
 
 	-- MRPD LOBBY DOUBLE DOORS
