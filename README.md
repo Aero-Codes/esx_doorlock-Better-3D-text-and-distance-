@@ -2,12 +2,13 @@
 
 Now checks for doors set in config and assigns text coordinates automatically.  
 Ignores doors that are not in range.  
-Seperated into three threads to reduce number of functions being performed.   
 Doors will lock once the door swing is complete.  
-Support for sliding doors (gates) and garage doors.  
+Support for sliding doors (gates) and garage doors.
 Improved cpu usage.  
 Animation when interacting with doors.  
-Utilises NUI to display lock status.  
+Utilises NUI to display lock status.
+
+[Preview](https://i.imgur.com/TrIn1cJ.jpg)
 
 
 ## Comparison  
