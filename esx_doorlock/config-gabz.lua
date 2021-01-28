@@ -3,7 +3,7 @@ Config.ShowUnlockedText = true
 
 Config.DoorList = {
 ------------------------------------------
---	MISSION ROW POLICE DEPARTMENT		    --
+--	MISSION ROW POLICE DEPARTMENT		--
 ------------------------------------------
 	-- gabz_mrpd	FRONT DOORS
 	{
@@ -160,6 +160,57 @@ Config.DoorList = {
 		objHash = -53345114,
 		objHeading = 180.0,
 		objCoords = vector3(481.0084, -1004.118, 26.48005),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+		fixText = true
+	},
+
+	-- gabz_mrpd	CELL 1
+	{
+		objHash = -53345114,
+		objHeading = 0.0,
+		objCoords = vector3(477.9126, -1012.189, 26.48005),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+	},
+
+	-- gabz_mrpd	CELL 2
+	{
+		objHash = -53345114,
+		objHeading = 0.0,
+		objCoords = vector3(480.9128, -1012.189, 26.48005),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+	},
+
+	-- gabz_mrpd	CELL 3
+	{
+		objHash = -53345114,
+		objHeading = 0.0,
+		objCoords = vector3(483.9127, -1012.189, 26.48005),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+	},
+
+	-- gabz_mrpd	CELL 4
+	{
+		objHash = -53345114,
+		objHeading = 0.0,
+		objCoords = vector3(486.9131, -1012.189, 26.48005),
+		authorizedJobs = { 'police' },
+		locked = true,
+		maxDistance = 1.5,
+	},
+
+	-- gabz_mrpd	CELL 5
+	{
+		objHash = -53345114,
+		objHeading = 180.0,
+		objCoords = vector3(484.1764, -1007.734, 26.48005),
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
