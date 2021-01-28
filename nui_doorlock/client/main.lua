@@ -19,21 +19,6 @@ Citizen.CreateThread(function()
 	end)
 end)
 
-function DrawText3D(coords, text)
-	local onScreen,_x,_y = World3dToScreen2d(coords.x,coords.y,coords.z)
-	local px,py,pz = table.unpack(GetGameplayCamCoords())
-    SetTextScale(0.35, 0.35)
-	SetTextFont(4)
-	SetTextDropShadow()
-    SetTextProportional(1.2)
-    SetTextColour(255, 255, 255, 150)
-    SetTextEntry("STRING")
-    SetTextCentre(1)
-    AddTextComponentString(text)
-    DrawText(_x,_y)
-	local factor = (string.len(text)) / 370
-end
-
 local last_x, last_y, lasttext
 function DrawTextNUI(coords, text)
 	local onScreen,_x,_y = GetScreenCoordFromWorldCoord(coords.x,coords.y,coords.z)
@@ -52,10 +37,12 @@ function loadAnimDict(dict)
 end
 
 function dooranim(entity, state)
+	Citizen.CreateThread(function()
     loadAnimDict("anim@heists@keycard@") 
     TaskPlayAnim(playerPed, "anim@heists@keycard@", "exit", 8.0, 1.0, -1, 16, 0, 0, 0, 0)
     Citizen.Wait(550)
-    ClearPedTasks(playerPed)
+	ClearPedTasks(playerPed)
+	end)
 end
 
 RegisterNetEvent('esx:setJob')
@@ -70,68 +57,53 @@ end
 
 function updateDoors(useDistance)
 	for _,doorID in ipairs(Config.DoorList) do
-		
-			if doorID.doors then
-				for k,v in ipairs(doorID.doors) do
-					if v.object and DoesEntityExist(v.object) then
-						doorID.exists = 1
-					else
-						doorID.exists = nil
-						v.object = GetClosestObjectOfType(v.objCoords, 1.0, v.objHash, false, false, false)
-						
-						if doorID.delete and DoesEntityExist(v.object) then
-							DeleteObject(v.object)
-							SetEntityAsNoLongerNeeded(v.object)
-						end
-						if DoesEntityExist(v.object) then
-							doorID.exists = 1
-						end
-					end
-				end
-			else
-				if doorID.object and DoesEntityExist(doorID.object) then
-					doorID.exists = 1
-				else
-					doorID.exists = nil
-					doorID.object = GetClosestObjectOfType(doorID.objCoords, 1.0, doorID.objHash, false, false, false)
-					
-					if doorID.delete and DoesEntityExist(doorID.object) then
-						DeleteObject(doorID.object)
-						SetEntityAsNoLongerNeeded(doorID.object)
-					end
-					if DoesEntityExist(doorID.object) then
-						doorID.exists = 1
-					end
-				end
+		if doorID.doors then
+			for k,v in ipairs(doorID.doors) do
+				v.object = GetClosestObjectOfType(v.objCoords, 1.0, v.objHash, false, false, false)
+				v.doorHash = GetHashKey('dl'.._..k)
+				AddDoorToSystem(v.doorHash, v.objHash, v.objCoords, false, false, false)
+				Citizen.Wait(0)
+				DoorSystemSetDoorState(v.doorHash, 4, false, false)
 			end
-			-- set text coords
-			if not doorID.setText and doorID.doors then
-				for k,v in ipairs(doorID.doors) do
-					if k == 1 and doorID.exists then
-						doorID.textCoords = v.objCoords
-					elseif k == 2 and doorID.exists then
-						local textDistance = doorID.textCoords - v.objCoords
-						doorID.textCoords = (doorID.textCoords - (textDistance / 2))
-						doorID.setText = true
-					end
-				end
-			elseif not doorID.setText and not doorID.doors and doorID.exists then
-				if not doorID.garage then
-					local minDimension, maxDimension = GetModelDimensions(doorID.objHash)
-					if doorID.fixText then dimensions = minDimension - maxDimension else dimensions = maxDimension - minDimension end
-					local dx, dy = tonumber(string.sub(dimensions.x, 1, 6)), tonumber(string.sub(dimensions.y, 1, 6))
-					local h = tonumber(string.sub(doorID.objHeading, 1, 1))
-					if h == 9 or h == 8 or h == 2 then dx, dy = dy, dx end
-					local maths = vector3(dx/2, dy/2, 0)
-					doorID.textCoords = GetEntityCoords(doorID.object) - maths
-					doorID.setText = true
-				else
-					doorID.textCoords = GetEntityCoords(doorID.object)
-					doorID.setText = true
-				end
-				--print(doorID.textCoords)
-			end
+		else
+			doorID.object = GetClosestObjectOfType(doorID.objCoords, 1.0, doorID.objHash, false, false, false)
+			doorID.doorHash = GetHashKey('dl'.._)
+			AddDoorToSystem(doorID.doorHash, doorID.objHash, doorID.objCoords, false, false, false)
+			Citizen.Wait(0)
+			DoorSystemSetDoorState(doorID.doorHash, 4, false, false)
+		end
 
+		-- set text coords
+		if not doorID.setText and doorID.doors then
+			for k,v in ipairs(doorID.doors) do
+				if k == 1 and v.object then
+					doorID.textCoords = v.objCoords
+				elseif k == 2 and v.object then
+					local textDistance = doorID.textCoords - v.objCoords
+					doorID.textCoords = (doorID.textCoords - (textDistance / 2))
+					doorID.setText = true
+				end
+			end
+		elseif not doorID.setText and not doorID.doors and doorID.object then
+			if not doorID.garage then
+				local minDimension, maxDimension = GetModelDimensions(doorID.objHash)
+				if doorID.fixText then dimensions = minDimension - maxDimension else dimensions = maxDimension - minDimension end
+				local dx, dy = tonumber(string.sub(dimensions.x, 1, 6)), tonumber(string.sub(dimensions.y, 1, 6))
+				local h = tonumber(string.sub(doorID.objHeading, 1, 1))
+				if h == 9 or h == 8 or h == 2 then dx, dy = dy, dx end
+				local maths = vector3(dx/2, dy/2, 0)
+				doorID.textCoords = GetEntityCoords(doorID.object) - maths
+				doorID.setText = true
+			else
+				doorID.textCoords = GetEntityCoords(doorID.object)
+				doorID.setText = true
+			end
+			if #(playerCoords - doorID.textCoords) < 12.0 then
+				if GetEntityHeightAboveGround(doorID.object) < 1 then
+					doorID.textCoords = vector3(doorID.textCoords.x, doorID.textCoords.y, doorID.textCoords.z+1.6)
+				end
+			end
+		end
 	end
 end
 
@@ -143,14 +115,14 @@ Citizen.CreateThread(function()
 				playerNotActive = nil
 				lastCoords = playerCoords
 				updateDoors()
-				Citizen.Wait(500)
-				updateDoors()
+				print(DoorSystemGetSize().. ' doors have been registered')
 			end
 		elseif not playerNotActive then
 			local distance = #(playerCoords - lastCoords)
 			if distance > 30 then
 				Citizen.Wait(500)
 				updateDoors()
+				print(DoorSystemGetSize().. ' doors have been registered')
 				--print(distance)
 				lastCoords = playerCoords
 			end
@@ -167,46 +139,39 @@ Citizen.CreateThread(function()
 		for k,v in ipairs(Config.DoorList) do
 			local isAuthorized = IsAuthorized(v)
 			if v.setText then distance = #(v.textCoords - playerCoords) end
-			if v.exists and distance < (v.maxDistance * 2) then
+			if v.setText and distance < (v.maxDistance * 2) then
 				sleepLen = 100
+
 				if v.doors then
-					for k2,v2 in ipairs(v.doors) do
-						if v.locked then
-							v2.objCurrentHeading = GetEntityHeading(v2.object)
-							if v2.objHeading and round(v2.objCurrentHeading, 0) == round(v2.objHeading, 0) then
-								FreezeEntityPosition(v2.object, 1)
-								SetEntityRotation(v2.object, 0.0, 0.0, round(v2.objHeading, 1), 2, true)
-							else letSleep = false end
-						elseif not v.locked then
-							FreezeEntityPosition(v2.object, 0)
+					for k2, v2 in ipairs(v.doors) do
+						local doorState = DoorSystemGetDoorState(v2.doorHash)
+						v2.objCurrentHeading = GetEntityHeading(v2.object)
+						if v.locked and round(v2.objCurrentHeading, 0) == round(v2.objHeading, 0) then 
+							DoorSystemSetDoorState(v2.doorHash, 1, false, false)
 							letSleep = true
+						elseif doorState ~= 0 and not v.locked then
+							DoorSystemSetDoorState(v2.doorHash, 0, false, false)
 							sleepLen = 50
+						elseif v.locked then
+							letSleep = false
 						end
 					end
 				else
-					if v.slides and v.locked then
-						coords = GetEntityCoords(v.object)
-						if round(#(coords - v.objCoords), 1) == 0.0 then
-							FreezeEntityPosition(v.object, 1)
-						else letSleep = false end
-					elseif v.locked and not v.slides then
-						v.objCurrentHeading = GetEntityHeading(v.object)
-						if v.objHeading and round(v.objCurrentHeading, 0) == round(v.objHeading, 0) then
-							FreezeEntityPosition(v.object, 1)
-							SetEntityRotation(v.object, 0.0, 0.0, round(v.objHeading, 1), 2, true)
-						else letSleep = false end
-					else
-						local objVelocity = #(GetEntityRotationVelocity(v.object))
-						if objVelocity == 0.0 then
-							FreezeEntityPosition(v.object, 0)
-							letSleep = true
-							sleepLen = 50
-						else letSleep = false end
+					local doorState = DoorSystemGetDoorState(v.doorHash)
+					v.objCurrentHeading = GetEntityHeading(v.object)
+					if v.locked and round(v.objCurrentHeading, 0) == round(v.objHeading, 0) then 
+						DoorSystemSetDoorState(v.doorHash, 1, false, false)
+						letSleep = true
+					elseif doorState ~= 0 and not v.locked then
+						DoorSystemSetDoorState(v.doorHash, 0, false, false)
+						sleepLen = 50
+					elseif v.locked then
+						letSleep = false
 					end
 				end
 			end
-			if v.exists and distance < v.maxDistance then
-				closestDoor, closestV, closestDistance, closestA = k, v, #(v.textCoords - playerCoords), isAuthorized
+			if v.setText and distance < v.maxDistance then
+				closestDoor, closestV, closestDistance, closestA = k, v, distance, isAuthorized
 			end
 		end
 		if letSleep then
@@ -224,31 +189,32 @@ Citizen.CreateThread(function()
 			closestDistance = #(closestV.textCoords - playerCoords)
 			if closestDistance < closestV.maxDistance and closestV.setText then
 				if not closestV.doors then
-					if closestV.locked and (closestV.slides or round(closestV.objCurrentHeading, 0) ~= round(closestV.objHeading, 0)) then DrawTextNUI(closestV.textCoords, 'Locking')
-					elseif closestV.locked then
-						DrawTextNUI(closestV.textCoords, 'Locked')
+					local doorState = DoorSystemGetDoorState(closestV.doorHash)
+					if closestV.locked and doorState ~= 1 then
+						DrawTextNUI(closestV.textCoords, 'Locking')
+					elseif not closestV.locked then
+						if Config.ShowUnlockedText then DrawTextNUI(closestV.textCoords, 'Unlocked') else DrawTextNUI(closestV.textCoords, nil) end
 					else
-						if Config.ShowUnlockedText then DrawTextNUI(closestV.textCoords, 'Unlocked') else SendNUIMessage({action = "hide"}) end
+						DrawTextNUI(closestV.textCoords, 'Locked')
 					end
 				else
 					local door = {}
 					for k2,v2 in ipairs(closestV.doors) do
-						local velocity = (#GetEntityRotationVelocity(v2.object))
-						if velocity > 0.0 and closestV.locked then door[k2] = 'Locking' elseif velocity == 0.0 and closestV.locked then door[k2] = 'Locked' elseif not closestV.locked and Config.ShowUnlockedText then door[k2] = 'Unlocked' end
+						local doorState = DoorSystemGetDoorState(v2.doorHash)
+						if doorState == 1 and closestV.locked then door[k2] = true else door[k2] = false end
 					end
-					if door[1] == door[2] and door[1] == 'Locked' then DrawTextNUI(closestV.textCoords, 'Locked')
+					if door[1] and door[1] == door[2] then DrawTextNUI(closestV.textCoords, 'Locked')
 					elseif not closestV.locked and Config.ShowUnlockedText then DrawTextNUI(closestV.textCoords, 'Unlocked')
-					elseif closestV.locked then DrawTextNUI(closestV.textCoords, 'Locking') end
+					else DrawTextNUI(closestV.textCoords, 'Locking') end
 				end
 				if closestA and IsControlJustReleased(0, 38) then
-					SendNUIMessage({action = "hide"})
 					if not IsPedInAnyVehicle(playerPed) then dooranim(closestV.object, closestV.locked) end
 					closestV.locked = not closestV.locked
 					TriggerServerEvent('esx_doorlock:updateState', closestDoor, closestV) -- Broadcast new state of the door to everyone
 				end
 			else
 				if closestDistance > closestV.maxDistance then
-					SendNUIMessage({action = "hide"})
+					DrawTextNUI(closestV.textCoords, nil)
 				end
 				closestDoor, closestV, closestDistance, closestA = nil, nil, nil, false
 			end
