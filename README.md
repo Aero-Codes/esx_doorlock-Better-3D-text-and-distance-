@@ -1,12 +1,13 @@
-# [thelindat] esx_doorlock
+# nui_doorlock for ESX
 
 Now checks for doors set in config and assigns text coordinates automatically.  
 Ignores doors that are not in range.  
 Seperated into three threads to reduce number of functions being performed.   
 Doors will lock once the door swing is complete.  
-Support for sliding doors (gates).  
+Support for sliding doors (gates) and garage doors.  
 Improved cpu usage.  
 Animation when interacting with doors.  
+Utilizes NUI to display lock status.  
 
 
 ## Comparison  
