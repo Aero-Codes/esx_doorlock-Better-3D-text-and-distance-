@@ -7,7 +7,7 @@ Doors will lock once the door swing is complete.
 Support for sliding doors (gates) and garage doors.  
 Improved cpu usage.  
 Animation when interacting with doors.  
-Utilizes NUI to display lock status.  
+Utilises NUI to display lock status.  
 
 
 ## Comparison  
