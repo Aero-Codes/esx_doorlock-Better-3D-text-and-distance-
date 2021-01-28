@@ -224,7 +224,7 @@ Citizen.CreateThread(function()
 			closestDistance = #(closestV.textCoords - playerCoords)
 			if closestDistance < closestV.maxDistance and closestV.setText then
 				if not closestV.doors then
-					if closestV.locked and round(closestV.objCurrentHeading, 0) ~= round(closestV.objHeading, 0) then DrawTextNUI(closestV.textCoords, 'Locking')
+					if closestV.locked and (closestV.slides or round(closestV.objCurrentHeading, 0) ~= round(closestV.objHeading, 0)) then DrawTextNUI(closestV.textCoords, 'Locking')
 					elseif closestV.locked then
 						DrawTextNUI(closestV.textCoords, 'Locked')
 					else
