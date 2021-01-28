@@ -8,7 +8,7 @@ Improved cpu usage.
 Animation when interacting with doors.  
 Utilises NUI to display lock status.
 
-[Preview](https://i.imgur.com/TrIn1cJ.jpg)
+[Preview](https://i.imgur.com/DfRAuYa.jpg)
 
 
 ## Comparison  
