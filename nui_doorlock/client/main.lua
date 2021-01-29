@@ -17,11 +17,15 @@ Citizen.CreateThread(function()
 			Config.DoorList[doorID] = values
 		end
 	end)
+	if ESX.PlayerData.lastPosition then ESX.PlayerData.coords = ESX.PlayerData.lastPosition end
+
 	playerCoords = vector3(ESX.PlayerData.coords.x, ESX.PlayerData.coords.y, ESX.PlayerData.coords.z)
 	lastCoords = playerCoords
 	updateDoors()
 	playerNotActive = nil
+
 end)
+
 
 -- Set state for a door
 RegisterNetEvent('esx_doorlock:setState')
@@ -73,22 +77,36 @@ function updateDoors()
 		if doorID.doors then
 			for k,v in ipairs(doorID.doors) do
 				count = count + 1
-				if #(playerCoords - v.objCoords) < 50 then
+				if #(playerCoords - v.objCoords) < 100 then
 					v.object = GetClosestObjectOfType(v.objCoords, 1.0, v.objHash, false, false, false)
-					v.doorHash = GetHashKey('dl'.._..k)
-					AddDoorToSystem(v.doorHash, v.objHash, v.objCoords, false, false, false)
-					DoorSystemSetDoorState(v.doorHash, 4, false, false)
+					if doorID.delete then
+						SetEntityAsMissionEntity(v.object, 1, 1)
+						DeleteObject(v.object)
+						v.object = nil
+					end
+					if v.object then
+						v.doorHash = GetHashKey('dl'.._..k)
+						AddDoorToSystem(v.doorHash, v.objHash, v.objCoords, false, false, false)
+						DoorSystemSetDoorState(v.doorHash, 4, false, false)
+					end
 				elseif v.object then RemoveDoorFromSystem(v.doorHash) end
 			end
 		else
 			count = count + 1
-			if #(playerCoords - doorID.objCoords) < 50 then
+			if #(playerCoords - doorID.objCoords) < 100 then
 				if doorID.slides then doorID.object = GetClosestObjectOfType(doorID.objCoords, 5.0, doorID.objHash, false, false, false) else
 					doorID.object = GetClosestObjectOfType(doorID.objCoords, 1.0, doorID.objHash, false, false, false)
 				end
-				doorID.doorHash = GetHashKey('dl'.._)
-				AddDoorToSystem(doorID.doorHash, doorID.objHash, doorID.objCoords, false, false, false)
-				DoorSystemSetDoorState(doorID.doorHash, 4, false, false)
+				if doorID.delete then
+					SetEntityAsMissionEntity(doorID.object, 1, 1)
+					DeleteObject(doorID.object)
+					doorID.object = nil
+				end
+				if doorID.object then
+					doorID.doorHash = GetHashKey('dl'.._)
+					AddDoorToSystem(doorID.doorHash, doorID.objHash, doorID.objCoords, false, false, false)
+					DoorSystemSetDoorState(doorID.doorHash, 4, false, false)
+				end
 			elseif doorID.object then RemoveDoorFromSystem(doorID.doorHash) end
 		end
 
@@ -119,22 +137,22 @@ function updateDoors()
 			end
 			if doorID.slides then
 				DoorSystemSetAutomaticDistance(doorID.doorHash, 25.0, false, false)
-			end
-			if GetEntityHeightAboveGround(doorID.object) < 1 then
-				doorID.textCoords = vector3(doorID.textCoords.x, doorID.textCoords.y, doorID.textCoords.z+1.6)
+				if GetEntityHeightAboveGround(doorID.object) < 1 then
+					doorID.textCoords = vector3(doorID.textCoords.x, doorID.textCoords.y, doorID.textCoords.z+1.6)
+				end
 			end
 		end
 	end
 	doorCount = DoorSystemGetSize()
-	print(('%s of %s doors are loaded'):format(doorCount, count))
+	if doorCount ~= 0 then print(('%s of %s doors are loaded'):format(doorCount, count)) end
+	--print(playerCoords)
 end
 
 Citizen.CreateThread(function()
 	while playerNotActive do Citizen.Wait(100) end
-	Citizen.Wait(5000)
 	while true do
 		local distance = #(playerCoords - lastCoords)
-		if distance > 20 then
+		if distance > 50 then
 			updateDoors()
 			--print(distance)
 			lastCoords = playerCoords
