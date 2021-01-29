@@ -50,6 +50,7 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 5,
+		slides = true
 	},
 	
 	-- MRPD GARAGE 1
@@ -60,7 +61,8 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 5,
-		garage = true
+		garage = true,
+		slides = true
 	},
 	-- MRPD GARAGE 2
 	{
@@ -70,7 +72,8 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 5,
-		garage = true
+		garage = true,
+		slides = true
 	},
 
 	-- MRPD LOCKER ROOMS
