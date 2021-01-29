@@ -79,7 +79,9 @@ function updateDoors(useDistance)
 		else
 			count = count + 1
 			if #(playerCoords - doorID.objCoords) < 50 then
-				doorID.object = GetClosestObjectOfType(doorID.objCoords, 1.0, doorID.objHash, false, false, false)
+				if doorID.slides then doorID.object = GetClosestObjectOfType(doorID.objCoords, 5.0, doorID.objHash, false, false, false) else
+					doorID.object = GetClosestObjectOfType(doorID.objCoords, 1.0, doorID.objHash, false, false, false)
+				end
 				doorID.doorHash = GetHashKey('dl'.._)
 				AddDoorToSystem(doorID.doorHash, doorID.objHash, doorID.objCoords, false, false, false)
 				Citizen.Wait(0)
@@ -92,7 +94,7 @@ function updateDoors(useDistance)
 			for k,v in ipairs(doorID.doors) do
 				if k == 1 and v.object then
 					doorID.textCoords = v.objCoords
-				elseif k == 2 and v.object then
+				elseif k == 2 and v.object and doorID.textCoords then
 					local textDistance = doorID.textCoords - v.objCoords
 					doorID.textCoords = (doorID.textCoords - (textDistance / 2))
 					doorID.setText = true
@@ -129,6 +131,7 @@ Citizen.CreateThread(function()
 		if playerNotActive then
 			if not IsPedStill(PlayerPedId()) or IsPedInAnyVehicle(PlayerPedId(), true) then
 				playerPed = PlayerPedId()
+				playerCoords = GetEntityCoords(playerPed)
 				playerNotActive = nil
 				lastCoords = playerCoords
 				updateDoors()
