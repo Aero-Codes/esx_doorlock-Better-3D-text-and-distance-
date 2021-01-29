@@ -1,10 +1,9 @@
-<p align="left" style="font-size: 22pt; font-family: 'Times New Roman'; font-weight: 600; line-height:15pt;">nui_doorlock</br>
-<font style="font-size: 9pt; font-family: 'Tahoma'; font-weight: 500;">A fork of esx_doorlock, featuring improved performance and improved functionality.</font>
-<hr></p>
+# nui_doorlock
+A fork of esx_doorlock, featuring improved performance and improved functionality.
+<hr>
 <p align="center" style="font-size: 8pt; font-family: 'Tahoma';"><img src="https://i.imgur.com/wulspM9.png"/>
 * Master represents the original; old is the code I created a fork from. *</p>
 <hr>
-<font style="font-size: 9pt; font-family: 'Tahoma'; font-weight: 500;">
 <ul>
 <li>No more `SetEntityHeading` and `FreezeEntityPosition` natives.<br>
 Doors in range are assigned a doorHash, used with `AddDoorToSystem`.<br>
@@ -20,5 +19,5 @@ By default, icons from font-awesome are being displayed; but there is support fo
 Instead of updating the door list every X seconds, your position will be compared to where the last update occured and update when appropriate.<br>
 The state of doors is only checked while in range, and the number of checks per loop depends on the state of the door.</li>
 </ul>
-</font><hr>
-<p align="center" style="font-size: 8pt; font-family: 'Tahoma';"><img src="https://i.imgur.com/Sug2Nj5.jpg"/></p>
+<hr>
+<p align="center"><img src="https://i.imgur.com/Sug2Nj5.jpg"/></p>
