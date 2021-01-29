@@ -17,6 +17,10 @@ Citizen.CreateThread(function()
 			Config.DoorList[doorID] = values
 		end
 	end)
+	playerCoords = vector3(ESX.PlayerData.coords.x, ESX.PlayerData.coords.y, ESX.PlayerData.coords.z)
+	lastCoords = playerCoords
+	updateDoors()
+	playerNotActive = nil
 end)
 
 -- Set state for a door
@@ -25,12 +29,13 @@ AddEventHandler('esx_doorlock:setState', function(doorID, values)
 	Config.DoorList[doorID] = values
 end)
 
-
 local last_x, last_y, lasttext
 function DrawTextNUI(coords, text)
+	local paused = false
+	if IsPauseMenuActive() then paused = true end
 	local onScreen,_x,_y = GetScreenCoordFromWorldCoord(coords.x,coords.y,coords.z)
-	if _x ~= last_x or _y ~= last_y or text ~= lasttext then
-		SendNUIMessage({action = "display", x = _x, y = _y, text = text})
+	if _x ~= last_x or _y ~= last_y or text ~= lasttext or paused then
+		if paused then SendNUIMessage ({action = "hide"}) else SendNUIMessage({action = "display", x = _x, y = _y, text = text}) end
 		last_x, last_y, lasttext = _x, _y, text
 		Citizen.Wait(0)
 	end
@@ -62,7 +67,7 @@ function round(num, decimal)
 	return math.floor(num * mult + 0.5) / mult
 end
 
-function updateDoors(useDistance)
+function updateDoors()
 	local count = 0
 	for _,doorID in ipairs(Config.DoorList) do
 		if doorID.doors then
@@ -72,7 +77,6 @@ function updateDoors(useDistance)
 					v.object = GetClosestObjectOfType(v.objCoords, 1.0, v.objHash, false, false, false)
 					v.doorHash = GetHashKey('dl'.._..k)
 					AddDoorToSystem(v.doorHash, v.objHash, v.objCoords, false, false, false)
-					Citizen.Wait(0)
 					DoorSystemSetDoorState(v.doorHash, 4, false, false)
 				elseif v.object then RemoveDoorFromSystem(v.doorHash) end
 			end
@@ -84,7 +88,6 @@ function updateDoors(useDistance)
 				end
 				doorID.doorHash = GetHashKey('dl'.._)
 				AddDoorToSystem(doorID.doorHash, doorID.objHash, doorID.objCoords, false, false, false)
-				Citizen.Wait(0)
 				DoorSystemSetDoorState(doorID.doorHash, 4, false, false)
 			elseif doorID.object then RemoveDoorFromSystem(doorID.doorHash) end
 		end
@@ -127,22 +130,14 @@ function updateDoors(useDistance)
 end
 
 Citizen.CreateThread(function()
+	while playerNotActive do Citizen.Wait(100) end
+	Citizen.Wait(5000)
 	while true do
-		if playerNotActive then
-			if not IsPedStill(PlayerPedId()) or IsPedInAnyVehicle(PlayerPedId(), true) then
-				playerPed = PlayerPedId()
-				playerCoords = GetEntityCoords(playerPed)
-				playerNotActive = nil
-				lastCoords = playerCoords
-				updateDoors()
-			end
-		elseif not playerNotActive then
-			local distance = #(playerCoords - lastCoords)
-			if distance > 20 then
-				updateDoors()
-				--print(distance)
-				lastCoords = playerCoords
-			end
+		local distance = #(playerCoords - lastCoords)
+		if distance > 20 then
+			updateDoors()
+			--print(distance)
+			lastCoords = playerCoords
 		end
 		Citizen.Wait(500)
 	end
@@ -225,6 +220,7 @@ end)
 Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
+		playerPed = PlayerPedId()
 		playerCoords = GetEntityCoords(playerPed)
 		if doorCount ~= nil and doorCount ~= 0 and closestDistance then
 			closestDistance = #(closestV.textCoords - playerCoords)
