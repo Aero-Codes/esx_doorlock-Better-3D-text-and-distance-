@@ -23,7 +23,6 @@ Citizen.CreateThread(function()
 	lastCoords = playerCoords
 	updateDoors()
 	playerNotActive = nil
-
 end)
 
 
@@ -73,7 +72,6 @@ end
 
 function updateDoors()
 	local count = 0
-	Citizen.Wait(1000)
 	for _,doorID in ipairs(Config.DoorList) do
 		if doorID.doors then
 			for k,v in ipairs(doorID.doors) do
@@ -110,19 +108,19 @@ function updateDoors()
 				end
 			elseif doorID.object then RemoveDoorFromSystem(doorID.doorHash) end
 		end
-
+		Citizen.Wait(0)
 		-- set text coords
 		if not doorID.setText and doorID.doors then
 			for k,v in ipairs(doorID.doors) do
-				if k == 1 and v.object then
+				if k == 1 and DoesEntityExist(v.object) then
 					doorID.textCoords = v.objCoords
-				elseif k == 2 and v.object and doorID.textCoords then
+				elseif k == 2 and DoesEntityExist(v.object) and doorID.textCoords then
 					local textDistance = doorID.textCoords - v.objCoords
 					doorID.textCoords = (doorID.textCoords - (textDistance / 2))
 					doorID.setText = true
 				end
 			end
-		elseif not doorID.setText and not doorID.doors and doorID.object then
+		elseif not doorID.setText and not doorID.doors and DoesEntityExist(doorID.object) then
 			if not doorID.garage then
 				local minDimension, maxDimension = GetModelDimensions(doorID.objHash)
 				if doorID.fixText then dimensions = minDimension - maxDimension else dimensions = maxDimension - minDimension end
