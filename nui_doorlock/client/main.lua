@@ -113,7 +113,7 @@ function updateDoors(useDistance)
 				doorID.setText = true
 			end
 			if doorID.slides then
-				DoorSystemSetAutomaticDistance(doorID.doorHash, 25, false, false)
+				DoorSystemSetAutomaticDistance(doorID.doorHash, 25.0, false, false)
 			end
 			if GetEntityHeightAboveGround(doorID.object) < 1 then
 				doorID.textCoords = vector3(doorID.textCoords.x, doorID.textCoords.y, doorID.textCoords.z+1.6)
