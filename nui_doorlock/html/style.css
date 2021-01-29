@@ -6,8 +6,6 @@
 }
 
 .fas {
-    vertical-align: middle;
-    text-align: center;
 }
 
 .container {
@@ -18,6 +16,8 @@
 }
 
 .doorlock {
+    width: 100px;
+    height: 100px;
     position: fixed;
     color: white;
     margin: 0 auto;
