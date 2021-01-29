@@ -73,11 +73,12 @@ end
 
 function updateDoors()
 	local count = 0
+	Citizen.Wait(1000)
 	for _,doorID in ipairs(Config.DoorList) do
 		if doorID.doors then
 			for k,v in ipairs(doorID.doors) do
 				count = count + 1
-				if #(playerCoords - v.objCoords) < 100 then
+				if #(vector2(playerCoords.x, playerCoords.y) - vector2(v.objCoords.x, v.objCoords.y)) < 100 then
 					v.object = GetClosestObjectOfType(v.objCoords, 1.0, v.objHash, false, false, false)
 					if doorID.delete then
 						SetEntityAsMissionEntity(v.object, 1, 1)
@@ -93,7 +94,7 @@ function updateDoors()
 			end
 		else
 			count = count + 1
-			if #(playerCoords - doorID.objCoords) < 100 then
+			if #(vector2(playerCoords.x, playerCoords.y) - vector2(doorID.objCoords.x, doorID.objCoords.y)) < 100 then
 				if doorID.slides then doorID.object = GetClosestObjectOfType(doorID.objCoords, 5.0, doorID.objHash, false, false, false) else
 					doorID.object = GetClosestObjectOfType(doorID.objCoords, 1.0, doorID.objHash, false, false, false)
 				end
@@ -151,7 +152,7 @@ end
 Citizen.CreateThread(function()
 	while playerNotActive do Citizen.Wait(100) end
 	while true do
-		local distance = #(playerCoords - lastCoords)
+		local distance = #(vector2(playerCoords.x, playerCoords.y) - vector2(lastCoords.x, lastCoords.y))
 		if distance > 50 then
 			updateDoors()
 			--print(distance)
