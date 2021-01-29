@@ -1,5 +1,5 @@
 ESX = nil
-closestDoor, closestV, closestDistance, closestA, playerPed, playerCoords, playerNotActive = nil, nil, nil, false, nil, nil, true
+closestDoor, closestV, closestDistance, closestA, playerPed, playerCoords, playerNotActive, doorCount = nil, nil, nil, false, nil, nil, true
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -18,6 +18,13 @@ Citizen.CreateThread(function()
 		end
 	end)
 end)
+
+-- Set state for a door
+RegisterNetEvent('esx_doorlock:setState')
+AddEventHandler('esx_doorlock:setState', function(doorID, values)
+	Config.DoorList[doorID] = values
+end)
+
 
 local last_x, last_y, lasttext
 function DrawTextNUI(coords, text)
@@ -56,21 +63,28 @@ function round(num, decimal)
 end
 
 function updateDoors(useDistance)
+	local count = 0
 	for _,doorID in ipairs(Config.DoorList) do
 		if doorID.doors then
 			for k,v in ipairs(doorID.doors) do
-				v.object = GetClosestObjectOfType(v.objCoords, 1.0, v.objHash, false, false, false)
-				v.doorHash = GetHashKey('dl'.._..k)
-				AddDoorToSystem(v.doorHash, v.objHash, v.objCoords, false, false, false)
-				Citizen.Wait(0)
-				DoorSystemSetDoorState(v.doorHash, 4, false, false)
+				count = count + 1
+				if #(playerCoords - v.objCoords) < 50 then
+					v.object = GetClosestObjectOfType(v.objCoords, 1.0, v.objHash, false, false, false)
+					v.doorHash = GetHashKey('dl'.._..k)
+					AddDoorToSystem(v.doorHash, v.objHash, v.objCoords, false, false, false)
+					Citizen.Wait(0)
+					DoorSystemSetDoorState(v.doorHash, 4, false, false)
+				elseif v.object then RemoveDoorFromSystem(v.doorHash) end
 			end
 		else
-			doorID.object = GetClosestObjectOfType(doorID.objCoords, 1.0, doorID.objHash, false, false, false)
-			doorID.doorHash = GetHashKey('dl'.._)
-			AddDoorToSystem(doorID.doorHash, doorID.objHash, doorID.objCoords, false, false, false)
-			Citizen.Wait(0)
-			DoorSystemSetDoorState(doorID.doorHash, 4, false, false)
+			count = count + 1
+			if #(playerCoords - doorID.objCoords) < 50 then
+				doorID.object = GetClosestObjectOfType(doorID.objCoords, 1.0, doorID.objHash, false, false, false)
+				doorID.doorHash = GetHashKey('dl'.._)
+				AddDoorToSystem(doorID.doorHash, doorID.objHash, doorID.objCoords, false, false, false)
+				Citizen.Wait(0)
+				DoorSystemSetDoorState(doorID.doorHash, 4, false, false)
+			elseif doorID.object then RemoveDoorFromSystem(doorID.doorHash) end
 		end
 
 		-- set text coords
@@ -98,36 +112,36 @@ function updateDoors(useDistance)
 				doorID.textCoords = GetEntityCoords(doorID.object)
 				doorID.setText = true
 			end
-			if #(playerCoords - doorID.textCoords) < 12.0 then
-				if GetEntityHeightAboveGround(doorID.object) < 1 then
-					doorID.textCoords = vector3(doorID.textCoords.x, doorID.textCoords.y, doorID.textCoords.z+1.6)
-				end
+			if doorID.slides then
+				DoorSystemSetAutomaticDistance(doorID.doorHash, 25, false, false)
+			end
+			if GetEntityHeightAboveGround(doorID.object) < 1 then
+				doorID.textCoords = vector3(doorID.textCoords.x, doorID.textCoords.y, doorID.textCoords.z+1.6)
 			end
 		end
 	end
+	doorCount = DoorSystemGetSize()
+	print(('%s of %s doors are loaded'):format(doorCount, count))
 end
 
 Citizen.CreateThread(function()
 	while true do
-		if playerNotActive and playerCoords then
-			Citizen.Wait(500)
-			if not IsPedStill(playerPed) then
+		if playerNotActive then
+			if not IsPedStill(PlayerPedId()) or IsPedInAnyVehicle(PlayerPedId(), true) then
+				playerPed = PlayerPedId()
 				playerNotActive = nil
 				lastCoords = playerCoords
 				updateDoors()
-				print(DoorSystemGetSize().. ' doors have been registered')
 			end
 		elseif not playerNotActive then
 			local distance = #(playerCoords - lastCoords)
-			if distance > 30 then
-				Citizen.Wait(500)
+			if distance > 20 then
 				updateDoors()
-				print(DoorSystemGetSize().. ' doors have been registered')
 				--print(distance)
 				lastCoords = playerCoords
 			end
 		end
-		Citizen.Wait(0)
+		Citizen.Wait(500)
 	end
 end)
 
@@ -135,57 +149,81 @@ Citizen.CreateThread(function()
 	while not playerCoords do Citizen.Wait(0) end
 	while true do
 		Citizen.Wait(0)
-		local letSleep, sleepLen, distance = true, 500, 0
-		for k,v in ipairs(Config.DoorList) do
-			local isAuthorized = IsAuthorized(v)
-			if v.setText then distance = #(v.textCoords - playerCoords) end
-			if v.setText and distance < (v.maxDistance * 2) then
-				sleepLen = 100
+		local letSleep, sleepLen, distance = true, 1000, 0
+		if doorCount then
+			for k,v in ipairs(Config.DoorList) do
+				local isAuthorized = IsAuthorized(v)
+				if v.setText then distance = #(v.textCoords - playerCoords) end
+				if v.setText and distance < 50 then
+					sleepLen = 300
 
-				if v.doors then
-					for k2, v2 in ipairs(v.doors) do
-						local doorState = DoorSystemGetDoorState(v2.doorHash)
-						v2.objCurrentHeading = GetEntityHeading(v2.object)
-						if v.locked and round(v2.objCurrentHeading, 0) == round(v2.objHeading, 0) then 
-							DoorSystemSetDoorState(v2.doorHash, 1, false, false)
+					if v.doors and distance < (v.maxDistance * 2) then
+						for k2, v2 in ipairs(v.doors) do
+							local doorState = DoorSystemGetDoorState(v2.doorHash)
+							v2.objCurrentHeading = GetEntityHeading(v2.object)
+							if v.locked and IsDoorClosed(v2.doorHash) then 
+								DoorSystemSetDoorState(v2.doorHash, 1, false, false)
+								letSleep = true
+							elseif not v.locked then
+								DoorSystemSetDoorState(v2.doorHash, 0, false, false)
+								letSleep = false
+							else
+								if round(v2.objCurrentHeading, 0) == round(v2.objHeading, 0) then
+									DoorSystemSetDoorState(v2.doorHash, 4, false, false)
+									letSleep = true
+								else
+									letSleep = false
+								end
+							end
+						end
+					elseif not v.doors and not v.slides and distance < (v.maxDistance * 2) then
+						local doorState = DoorSystemGetDoorState(v.doorHash)
+						v.objCurrentHeading = GetEntityHeading(v.object)
+						if v.locked and IsDoorClosed(v.doorHash) then 
+							DoorSystemSetDoorState(v.doorHash, 1, false, false)
+							letSleep = true
+						elseif not v.locked then
+							DoorSystemSetDoorState(v.doorHash, 0, false, false)
+							letSleep = false
+						else
+							if round(v.objCurrentHeading, 0) == round(v.objHeading, 0) then
+								DoorSystemSetDoorState(v.doorHash, 4, false, false)
+								letSleep = true
+							else
+								letSleep = false
+							end
+						end
+					elseif v.slides and distance < 20 then
+						local doorState = DoorSystemGetDoorState(v.doorHash)
+						v.objCurrentHeading = GetEntityHeading(v.object)
+						if v.locked and doorState ~= 1 then 
+							DoorSystemSetDoorState(v.doorHash, 1, false, false)
 							letSleep = true
 						elseif doorState ~= 0 and not v.locked then
-							DoorSystemSetDoorState(v2.doorHash, 0, false, false)
+							DoorSystemSetDoorState(v.doorHash, 0, false, false)
 							sleepLen = 50
-						elseif v.locked then
-							letSleep = false
+						else
+							sleepLen = 100
+							letSleep = true
 						end
 					end
-				else
-					local doorState = DoorSystemGetDoorState(v.doorHash)
-					v.objCurrentHeading = GetEntityHeading(v.object)
-					if v.locked and round(v.objCurrentHeading, 0) == round(v.objHeading, 0) then 
-						DoorSystemSetDoorState(v.doorHash, 1, false, false)
-						letSleep = true
-					elseif doorState ~= 0 and not v.locked then
-						DoorSystemSetDoorState(v.doorHash, 0, false, false)
-						sleepLen = 50
-					elseif v.locked then
-						letSleep = false
-					end
+				end
+				if v.setText and distance < v.maxDistance then
+					closestDoor, closestV, closestDistance, closestA = k, v, distance, isAuthorized
 				end
 			end
-			if v.setText and distance < v.maxDistance then
-				closestDoor, closestV, closestDistance, closestA = k, v, distance, isAuthorized
+			if letSleep then
+				Citizen.Wait(sleepLen)
 			end
-		end
-		if letSleep then
-			Citizen.Wait(sleepLen)
-		end
+		else Citizen.Wait(1000) end
 	end
 end)
 
 Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
-		playerPed = PlayerPedId()
 		playerCoords = GetEntityCoords(playerPed)
-		if closestDistance then
+		if doorCount ~= nil and doorCount ~= 0 and closestDistance then
 			closestDistance = #(closestV.textCoords - playerCoords)
 			if closestDistance < closestV.maxDistance and closestV.setText then
 				if not closestV.doors then
@@ -235,9 +273,3 @@ function IsAuthorized(doorID)
 
 	return false
 end
-
--- Set state for a door
-RegisterNetEvent('esx_doorlock:setState')
-AddEventHandler('esx_doorlock:setState', function(doorID, values)
-	Config.DoorList[doorID] = values
-end)
