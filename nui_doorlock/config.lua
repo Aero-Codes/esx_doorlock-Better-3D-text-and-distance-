@@ -35,7 +35,7 @@ Config.DoorList = {
 	{
 		objHash = -1033001619,
 		objHeading = 0.0,
-		objCoords = vector3(464.5784, -1003.538, 25.00599),
+		objCoords = vector3(463.4783, -1003.538, 25.00599),
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
@@ -49,8 +49,8 @@ Config.DoorList = {
 		objCoords = vector3(488.8948, -1017.21, 27.14863),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 8,
-		slides = true,
+		maxDistance = 5,
+		slides = true
 	},
 	
 	-- MRPD GARAGE 1
@@ -61,8 +61,8 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 5,
-		slides = true,
-		garage = true
+		garage = true,
+		slides = true
 	},
 	-- MRPD GARAGE 2
 	{
@@ -72,8 +72,8 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 5,
-		slides = true,
-		garage = true
+		garage = true,
+		slides = true
 	},
 
 	-- MRPD LOCKER ROOMS
