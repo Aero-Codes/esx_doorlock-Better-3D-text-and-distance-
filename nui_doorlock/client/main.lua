@@ -20,12 +20,15 @@ Citizen.CreateThread(function()
 		retrievedData = true
 	end)
 	while not retrievedData do Citizen.Wait(0) end
-	
+
 	-- Register nearby doors on spawn
 	if ESX.PlayerData.lastPosition then ESX.PlayerData.coords = ESX.PlayerData.lastPosition end
-	playerCoords = vector3(ESX.PlayerData.coords.x, ESX.PlayerData.coords.y, ESX.PlayerData.coords.z)
-	lastCoords = playerCoords
-	updateDoors()
+	spawnCoords = vector3(ESX.PlayerData.coords.x, ESX.PlayerData.coords.y, ESX.PlayerData.coords.z)
+	playerCoords = GetEntityCoords(PlayerPedId())
+	while not distance or distance > 3.0 do Citizen.Wait(0) distance = #(spawnCoords - playerCoords) end
+	
+	lastCoords = spawnCoords
+	updateDoors(true)
 	playerNotActive = nil
 end)
 
@@ -74,7 +77,7 @@ function round(num, decimal)
 	return math.floor(num * mult + 0.5) / mult
 end
 
-function updateDoors()
+function updateDoors(starting)
 	local count = 0
 	for _,doorID in ipairs(Config.DoorList) do
 		if doorID.doors then
@@ -146,8 +149,10 @@ function updateDoors()
 			end
 		end
 	end
-	doorCount = DoorSystemGetSize()
-	if doorCount ~= 0 then print(('%s of %s doors are loaded'):format(doorCount, count)) end
+	if starting then Citizen.Wait(0) updateDoors() else
+		doorCount = DoorSystemGetSize()
+		if doorCount ~= 0 then print(('%s of %s doors are loaded'):format(doorCount, count)) end
+	end
 	--print(playerCoords)
 end
 
