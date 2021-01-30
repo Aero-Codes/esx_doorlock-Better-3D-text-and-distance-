@@ -1,5 +1,5 @@
 ESX = nil
-closestDoor, closestV, closestDistance, closestA, playerPed, playerCoords, playerNotActive, doorCount = nil, nil, nil, false, nil, nil, true
+local closestDoor, closestV, closestDistance, closestA, playerPed, playerCoords, playerNotActive, doorCount, retrievedData = nil, nil, nil, false, nil, nil, true
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -18,10 +18,12 @@ Citizen.CreateThread(function()
 		end
 		retrievedData = true
 	end)
+	while not retrievedData do Citizen.Wait(0) end
 	updateDoors(true)
-	while not retrievedData or IsPedStill(PlayerPedId()) do Citizen.Wait(0) end
-	updateDoors(false)
+	while IsPedStill(PlayerPedId()) do Citizen.Wait(0) end
+	updateDoors()
 	playerNotActive = nil
+	retrievedData = nil
 end)
 
 
@@ -70,11 +72,10 @@ function round(num, decimal)
 end
 
 function updateDoors(starting)
-	local count = 0
+	playerCoords = GetEntityCoords(PlayerPedId())
 	for _,doorID in ipairs(Config.DoorList) do
 		if doorID.doors then
 			for k,v in ipairs(doorID.doors) do
-				count = count + 1
 				if #(vector2(playerCoords.x, playerCoords.y) - vector2(v.objCoords.x, v.objCoords.y)) < 100 then
 					v.object = GetClosestObjectOfType(v.objCoords, 1.0, v.objHash, false, false, false)
 					if doorID.delete then
@@ -90,7 +91,6 @@ function updateDoors(starting)
 				elseif v.object then RemoveDoorFromSystem(v.doorHash) end
 			end
 		else
-			count = count + 1
 			if #(vector2(playerCoords.x, playerCoords.y) - vector2(doorID.objCoords.x, doorID.objCoords.y)) < 100 then
 				if doorID.slides then doorID.object = GetClosestObjectOfType(doorID.objCoords, 5.0, doorID.objHash, false, false, false) else
 					doorID.object = GetClosestObjectOfType(doorID.objCoords, 1.0, doorID.objHash, false, false, false)
@@ -107,7 +107,6 @@ function updateDoors(starting)
 				end
 			elseif doorID.object then RemoveDoorFromSystem(doorID.doorHash) end
 		end
-		Citizen.Wait(0)
 		-- set text coords
 		if not doorID.setText and doorID.doors then
 			for k,v in ipairs(doorID.doors) do
@@ -143,7 +142,7 @@ function updateDoors(starting)
 	end
 	if not starting then
 		doorCount = DoorSystemGetSize()
-		if doorCount ~= 0 then print(('%s of %s doors are loaded'):format(doorCount, count)) end
+		if doorCount ~= 0 then print(('%s doors are loaded'):format(doorCount)) end
 	end
 	--print(playerCoords)
 end
