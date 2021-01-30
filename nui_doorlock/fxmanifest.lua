@@ -1,7 +1,7 @@
 fx_version 'cerulean'
 games { 'gta5' }
 
-version '1.3.3'
+version '1.4.0'
 description 'https://github.com/thelindat/nui_doorlock'
 
 server_scripts {
