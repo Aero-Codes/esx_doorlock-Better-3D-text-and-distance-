@@ -150,8 +150,8 @@ end
 Citizen.CreateThread(function()
 	while playerNotActive do Citizen.Wait(100) end
 	while true do
-		local distance = #(vector2(playerCoords.x, playerCoords.y) - vector2(lastCoords.x, lastCoords.y))
-		if distance > 50 then
+		local distance = #(playerCoords - lastCoords)
+		if distance > 30 then
 			updateDoors()
 			--print(distance)
 			lastCoords = playerCoords
