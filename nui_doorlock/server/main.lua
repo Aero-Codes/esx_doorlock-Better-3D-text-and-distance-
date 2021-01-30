@@ -15,7 +15,6 @@ Citizen.CreateThread(function()
 		file:close()
 		for k,v in pairs(json.decode(data)) do
 			doorInfo[k] = v
-			print(v)
 		end
 	end
 end)
