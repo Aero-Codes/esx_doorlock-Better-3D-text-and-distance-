@@ -117,6 +117,12 @@ function updateDoors(starting)
 					doorID.textCoords = (doorID.textCoords - (textDistance / 2))
 					doorID.setText = true
 				end
+				if k == 2 and doorID.textCoords and doorID.slides then
+					DoorSystemSetAutomaticDistance(v.doorHash, (doorID.maxDistance * 3), false, false)
+					if GetEntityHeightAboveGround(v.object) < 1 then
+						doorID.textCoords = vector3(doorID.textCoords.x, doorID.textCoords.y, doorID.textCoords.z+1.2)
+					end
+				end
 			end
 		elseif not doorID.setText and not doorID.doors and DoesEntityExist(doorID.object) then
 			if not doorID.garage then
@@ -133,7 +139,7 @@ function updateDoors(starting)
 				doorID.setText = true
 			end
 			if doorID.slides then
-				DoorSystemSetAutomaticDistance(doorID.doorHash, 25.0, false, false)
+				DoorSystemSetAutomaticDistance(doorID.doorHash, (doorID.maxDistance * 2), false, false)
 				if GetEntityHeightAboveGround(doorID.object) < 1 then
 					doorID.textCoords = vector3(doorID.textCoords.x, doorID.textCoords.y, doorID.textCoords.z+1.6)
 				end
@@ -173,7 +179,7 @@ Citizen.CreateThread(function()
 				if v.setText and distance < 50 then
 					sleepLen = 300
 
-					if v.doors and distance < (v.maxDistance * 2) then
+					if v.doors and not v.slides and distance < (v.maxDistance * 2) then
 						for k2, v2 in ipairs(v.doors) do
 							local doorState = DoorSystemGetDoorState(v2.doorHash)
 							v2.objCurrentHeading = GetEntityHeading(v2.object)
@@ -210,17 +216,34 @@ Citizen.CreateThread(function()
 							end
 						end
 					elseif v.slides and distance < 20 then
-						local doorState = DoorSystemGetDoorState(v.doorHash)
-						v.objCurrentHeading = GetEntityHeading(v.object)
-						if v.locked and doorState ~= 1 then 
-							DoorSystemSetDoorState(v.doorHash, 1, false, false)
-							letSleep = true
-						elseif doorState ~= 0 and not v.locked then
-							DoorSystemSetDoorState(v.doorHash, 0, false, false)
-							sleepLen = 50
+						if v.doors then
+							for k2, v2 in ipairs(v.doors) do
+								local doorState = DoorSystemGetDoorState(v2.doorHash)
+								v2.objCurrentHeading = GetEntityHeading(v2.object)
+								if v.locked and doorState ~= 1 then 
+									DoorSystemSetDoorState(v2.doorHash, 1, false, false)
+									letSleep = true
+								elseif doorState ~= 0 and not v.locked then
+									DoorSystemSetDoorState(v2.doorHash, 0, false, false)
+									letSleep = false
+								else
+									sleepLen = 100
+									letSleep = true
+								end
+							end
 						else
-							sleepLen = 100
-							letSleep = true
+							local doorState = DoorSystemGetDoorState(v.doorHash)
+							v.objCurrentHeading = GetEntityHeading(v.object)
+							if v.locked and doorState ~= 1 then 
+								DoorSystemSetDoorState(v.doorHash, 1, false, false)
+								letSleep = true
+							elseif doorState ~= 0 and not v.locked then
+								DoorSystemSetDoorState(v.doorHash, 0, false, false)
+								sleepLen = 50
+							else
+								sleepLen = 100
+								letSleep = true
+							end
 						end
 					end
 				end
@@ -266,6 +289,7 @@ Citizen.CreateThread(function()
 					if not IsPedInAnyVehicle(playerPed) then dooranim(closestV.object, closestV.locked) end
 					closestV.locked = not closestV.locked
 					TriggerServerEvent('esx_doorlock:updateState', closestDoor, closestV.locked) -- Broadcast new state of the door to everyone
+					if closestV.locked then SendNUIMessage ({action = "playAudioLocked"}) else SendNUIMessage ({action = "playAudioUnlocked"}) end
 				end
 			else
 				if closestDistance > closestV.maxDistance then
