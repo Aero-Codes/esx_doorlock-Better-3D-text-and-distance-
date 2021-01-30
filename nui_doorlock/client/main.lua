@@ -11,7 +11,6 @@ Citizen.CreateThread(function()
 		Citizen.Wait(10)
 	end
 	ESX.PlayerData = ESX.GetPlayerData()
-	
 	-- Sync doors with the server
 	ESX.TriggerServerCallback('esx_doorlock:getDoorInfo', function(doorInfo)
 		for doorID, state in pairs(doorInfo) do
@@ -19,16 +18,9 @@ Citizen.CreateThread(function()
 		end
 		retrievedData = true
 	end)
-	while not retrievedData do Citizen.Wait(0) end
-
-	-- Register nearby doors on spawn
-	if ESX.PlayerData.lastPosition then ESX.PlayerData.coords = ESX.PlayerData.lastPosition end
-	spawnCoords = vector3(ESX.PlayerData.coords.x, ESX.PlayerData.coords.y, ESX.PlayerData.coords.z)
-	playerCoords = GetEntityCoords(PlayerPedId())
-	while not distance or distance > 3.0 do Citizen.Wait(0) distance = #(spawnCoords - playerCoords) end
-	
-	lastCoords = spawnCoords
 	updateDoors(true)
+	while not retrievedData or IsPedStill(PlayerPedId()) do Citizen.Wait(0) end
+	updateDoors(false)
 	playerNotActive = nil
 end)
 
@@ -149,7 +141,7 @@ function updateDoors(starting)
 			end
 		end
 	end
-	if starting then Citizen.Wait(0) updateDoors() else
+	if not starting then
 		doorCount = DoorSystemGetSize()
 		if doorCount ~= 0 then print(('%s of %s doors are loaded'):format(doorCount, count)) end
 	end
@@ -158,7 +150,8 @@ end
 
 Citizen.CreateThread(function()
 	while playerNotActive do Citizen.Wait(100) end
-	while true do
+	lastCoords = playerCoords
+	while playerCoords do
 		local distance = #(playerCoords - lastCoords)
 		if distance > 30 then
 			updateDoors()
