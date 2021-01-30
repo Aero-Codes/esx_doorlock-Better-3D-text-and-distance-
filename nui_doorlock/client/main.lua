@@ -11,14 +11,18 @@ Citizen.CreateThread(function()
 		Citizen.Wait(10)
 	end
 	ESX.PlayerData = ESX.GetPlayerData()
-	-- Update the door list
+	
+	-- Sync doors with the server
 	ESX.TriggerServerCallback('esx_doorlock:getDoorInfo', function(doorInfo)
-		for doorID,values in pairs(doorInfo) do
-			Config.DoorList[doorID] = values
+		for doorID, state in pairs(doorInfo) do
+			Config.DoorList[doorID].locked = state
 		end
+		retrievedData = true
 	end)
+	while not retrievedData do Citizen.Wait(0) end
+	
+	-- Register nearby doors on spawn
 	if ESX.PlayerData.lastPosition then ESX.PlayerData.coords = ESX.PlayerData.lastPosition end
-
 	playerCoords = vector3(ESX.PlayerData.coords.x, ESX.PlayerData.coords.y, ESX.PlayerData.coords.z)
 	lastCoords = playerCoords
 	updateDoors()
@@ -26,10 +30,15 @@ Citizen.CreateThread(function()
 end)
 
 
--- Set state for a door
+-- Sync a door with the server
 RegisterNetEvent('esx_doorlock:setState')
-AddEventHandler('esx_doorlock:setState', function(doorID, values)
-	Config.DoorList[doorID] = values
+AddEventHandler('esx_doorlock:setState', function(doorID, locked)
+	Config.DoorList[doorID].locked = locked
+end)
+
+RegisterNetEvent('esx:setJob')
+AddEventHandler('esx:setJob', function(job)
+	ESX.PlayerData.job = job
 end)
 
 local last_x, last_y, lasttext
@@ -59,11 +68,6 @@ function dooranim(entity, state)
 	ClearPedTasks(playerPed)
 	end)
 end
-
-RegisterNetEvent('esx:setJob')
-AddEventHandler('esx:setJob', function(job)
-	ESX.PlayerData.job = job
-end)
 
 function round(num, decimal)
 	local mult = 10^(decimal)
@@ -264,7 +268,7 @@ Citizen.CreateThread(function()
 				if closestA and IsControlJustReleased(0, 38) then
 					if not IsPedInAnyVehicle(playerPed) then dooranim(closestV.object, closestV.locked) end
 					closestV.locked = not closestV.locked
-					TriggerServerEvent('esx_doorlock:updateState', closestDoor, closestV) -- Broadcast new state of the door to everyone
+					TriggerServerEvent('esx_doorlock:updateState', closestDoor, closestV.locked) -- Broadcast new state of the door to everyone
 				end
 			else
 				if closestDistance > closestV.maxDistance then
