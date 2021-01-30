@@ -90,7 +90,7 @@ function updateDoors()
 					if v.object then
 						v.doorHash = GetHashKey('dl'.._..k)
 						AddDoorToSystem(v.doorHash, v.objHash, v.objCoords, false, false, false)
-						DoorSystemSetDoorState(v.doorHash, 4, false, false)
+						if doorID.locked then DoorSystemSetDoorState(v.doorHash, 4, false, false) end
 					end
 				elseif v.object then RemoveDoorFromSystem(v.doorHash) end
 			end
@@ -108,7 +108,7 @@ function updateDoors()
 				if doorID.object then
 					doorID.doorHash = GetHashKey('dl'.._)
 					AddDoorToSystem(doorID.doorHash, doorID.objHash, doorID.objCoords, false, false, false)
-					DoorSystemSetDoorState(doorID.doorHash, 4, false, false)
+					if doorID.locked then DoorSystemSetDoorState(doorID.doorHash, 4, false, false) end
 				end
 			elseif doorID.object then RemoveDoorFromSystem(doorID.doorHash) end
 		end
