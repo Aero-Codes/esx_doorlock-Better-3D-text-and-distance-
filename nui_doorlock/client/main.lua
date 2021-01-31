@@ -187,19 +187,19 @@ Citizen.CreateThread(function()
 							if v.locked and v.closed then 
 								DoorSystemSetDoorState(v2.doorHash, 1, false, false)
 								letSleep = true
-							elseif not v.locked then
+							elseif not v.locked and v.closed then
 								DoorSystemSetDoorState(v2.doorHash, 0, false, false)
 								v2.closed = false
-								letSleep = false
+								letSleep = true
 							else
 								if not v.closed and v.locked and round(v2.objCurrentHeading, 0) == round(v2.objHeading, 0) then
 									DoorSystemSetDoorState(v2.doorHash, 4, false, false)
 									if v2.oldMethod then FreezeEntityPosition(v2.object, true) SetEntityHeading(v2.object, v2.objHeading) end
 									v2.closed = true
 									letSleep = true
-								else
+								elseif v.locked then
 									letSleep = false
-								end
+								else letSleep = true end
 							end
 						end
 					elseif not v.doors and not v.slides and distance < (v.maxDistance * 2) then
@@ -208,20 +208,20 @@ Citizen.CreateThread(function()
 						if v.locked and v.closed then 
 							DoorSystemSetDoorState(v.doorHash, 1, false, false)
 							letSleep = true
-						elseif not v.locked then
+						elseif not v.locked and v.closed then
 							DoorSystemSetDoorState(v.doorHash, 0, false, false)
 							if v.oldMethod then FreezeEntityPosition(v.object, false) end
 							v.closed = false
-							letSleep = false
+							letSleep = true
 						else
 							if not v.closed and v.locked and round(v.objCurrentHeading, 0) == round(v.objHeading, 0) then
 								DoorSystemSetDoorState(v.doorHash, 4, false, false)
 								if v.oldMethod then FreezeEntityPosition(v.object, true) SetEntityHeading(v.object, v.objHeading) end
 								v.closed = true
 								letSleep = true
-							else
+							elseif v.locked then
 								letSleep = false
-							end
+							else letSleep = true end
 						end
 					elseif v.slides and distance < 20 then
 						if v.doors then
