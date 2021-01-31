@@ -126,6 +126,7 @@ Config.DoorList = {
 		locked = true,
 		maxDistance = 1.5,
 		fixText = true,
+		oldMethod = true
 	},
 
 	-- MRPD ROOFTOP
