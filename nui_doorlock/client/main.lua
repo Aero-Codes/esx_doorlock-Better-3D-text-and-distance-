@@ -283,7 +283,7 @@ Citizen.CreateThread(function()
 						if doorState == 1 and closestV.locked then door[k2] = true else door[k2] = false end
 					end
 					if door[1] and door[1] == door[2] then DrawTextNUI(closestV.textCoords, 'Locked')
-					elseif not closestV.locked and Config.ShowUnlockedText then DrawTextNUI(closestV.textCoords, 'Unlocked')
+					elseif not closestV.locked then if Config.ShowUnlockedText then DrawTextNUI(closestV.textCoords, 'Unlocked') else if isDrawing then SendNUIMessage ({action = "hide"}) isDrawing = false end end
 					else DrawTextNUI(closestV.textCoords, 'Locking') end
 				end
 			else
