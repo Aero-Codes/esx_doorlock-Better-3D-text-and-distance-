@@ -184,20 +184,21 @@ Citizen.CreateThread(function()
 						for k2, v2 in ipairs(v.doors) do
 							local doorState = DoorSystemGetDoorState(v2.doorHash)
 							v2.objCurrentHeading = GetEntityHeading(v2.object)
-							if v.locked and v.closed then 
+							if v.locked and v2.closed then 
 								DoorSystemSetDoorState(v2.doorHash, 1, false, false)
 								letSleep = true
-							elseif not v.locked and v.closed then
+							elseif not v.locked and v2.closed then
 								DoorSystemSetDoorState(v2.doorHash, 0, false, false)
+								if v.oldMethod then FreezeEntityPosition(v2.object, false) end
 								v2.closed = false
 								letSleep = true
 							else
-								if not v.closed and v.locked and round(v2.objCurrentHeading, 0) == round(v2.objHeading, 0) then
+								if not v2.closed and v.locked and round(v2.objCurrentHeading, 0) == round(v2.objHeading, 0) then
 									DoorSystemSetDoorState(v2.doorHash, 4, false, false)
-									if v2.oldMethod then FreezeEntityPosition(v2.object, true) SetEntityHeading(v2.object, v2.objHeading) end
+									if v.oldMethod then FreezeEntityPosition(v2.object, true) SetEntityHeading(v2.object, v2.objHeading) end
 									v2.closed = true
 									letSleep = true
-								elseif v.locked then
+								elseif v.locked and not v2.closed then
 									letSleep = false
 								else letSleep = true end
 							end
