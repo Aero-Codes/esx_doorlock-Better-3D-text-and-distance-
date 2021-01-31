@@ -38,12 +38,13 @@ AddEventHandler('esx:setJob', function(job)
 	ESX.PlayerData.job = job
 end)
 
-local last_x, last_y, lasttext
+local last_x, last_y, lasttext, isDrawing
 function DrawTextNUI(coords, text)
 	local paused = false
 	if IsPauseMenuActive() then paused = true end
 	local onScreen,_x,_y = GetScreenCoordFromWorldCoord(coords.x,coords.y,coords.z)
 	if _x ~= last_x or _y ~= last_y or text ~= lasttext or paused then
+		isDrawing = true
 		if paused then SendNUIMessage ({action = "hide"}) else SendNUIMessage({action = "display", x = _x, y = _y, text = text}) end
 		last_x, last_y, lasttext = _x, _y, text
 		Citizen.Wait(0)
@@ -271,7 +272,7 @@ Citizen.CreateThread(function()
 					if closestV.locked and doorState ~= 1 then
 						DrawTextNUI(closestV.textCoords, 'Locking')
 					elseif not closestV.locked then
-						if Config.ShowUnlockedText then DrawTextNUI(closestV.textCoords, 'Unlocked') else DrawTextNUI(closestV.textCoords, nil) end
+						if Config.ShowUnlockedText then DrawTextNUI(closestV.textCoords, 'Unlocked') else if isDrawing then SendNUIMessage ({action = "hide"}) isDrawing = false end end
 					else
 						DrawTextNUI(closestV.textCoords, 'Locked')
 					end
@@ -285,15 +286,9 @@ Citizen.CreateThread(function()
 					elseif not closestV.locked and Config.ShowUnlockedText then DrawTextNUI(closestV.textCoords, 'Unlocked')
 					else DrawTextNUI(closestV.textCoords, 'Locking') end
 				end
-				if closestA and IsControlJustReleased(0, 38) then
-					if not IsPedInAnyVehicle(playerPed) then dooranim(closestV.object, closestV.locked) end
-					closestV.locked = not closestV.locked
-					TriggerServerEvent('esx_doorlock:updateState', closestDoor, closestV.locked) -- Broadcast new state of the door to everyone
-					if closestV.locked then SendNUIMessage ({action = "playAudioLocked"}) else SendNUIMessage ({action = "playAudioUnlocked"}) end
-				end
 			else
-				if closestDistance > closestV.maxDistance then
-					DrawTextNUI(closestV.textCoords, nil)
+				if closestDistance > closestV.maxDistance and isDrawing then
+					SendNUIMessage ({action = "hide"}) isDrawing = false
 				end
 				closestDoor, closestV, closestDistance, closestA = nil, nil, nil, false
 			end
@@ -314,3 +309,13 @@ function IsAuthorized(doorID)
 
 	return false
 end
+
+RegisterCommand('+doorlock', function()
+	if closestDoor and closestA then
+		if not IsPedInAnyVehicle(playerPed) then dooranim(closestV.object, closestV.locked) end
+		closestV.locked = not closestV.locked
+		TriggerServerEvent('esx_doorlock:updateState', closestDoor, closestV.locked) -- Broadcast new state of the door to everyone
+		if closestV.locked then SendNUIMessage ({action = "playAudioLocked"}) else SendNUIMessage ({action = "playAudioUnlocked"}) end
+	end
+end)
+RegisterKeyMapping('+doorlock', 'Interact with a door lock', 'keyboard', 'e')
