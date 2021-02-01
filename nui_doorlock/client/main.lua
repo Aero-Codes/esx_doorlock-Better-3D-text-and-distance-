@@ -104,7 +104,7 @@ function updateDoors(starting)
 				if doorID.object then
 					doorID.doorHash = GetHashKey('dl'.._)
 					AddDoorToSystem(doorID.doorHash, doorID.objHash, doorID.objCoords, false, false, false)
-					if doorID.locked then DoorSystemSetDoorState(doorID.doorHash, 4, false, false) if doorID.oldMethod then FreezeEntityPosition(doorID.object, true) SetEntityHeading(doorID.object, doorID.objHeading) end end
+					if doorID.locked then DoorSystemSetDoorState(doorID.doorHash, 4, false, false) end
 				end
 			elseif doorID.object then RemoveDoorFromSystem(doorID.doorHash) end
 		end
@@ -180,49 +180,55 @@ Citizen.CreateThread(function()
 				if v.setText and distance < 50 then
 					sleepLen = 300
 
-					if v.doors and not v.slides and distance < (v.maxDistance * 2) then
+					if v.oldMethod then
+						local doorState = DoorSystemGetDoorState(v.doorHash)
+						v.objCurrentHeading = GetEntityHeading(v.object)
+						if not v.locked then
+							FreezeEntityPosition(v.object, false)
+							letSleep = false
+						else
+							if v.locked and round(v.objCurrentHeading, 0) == round(v.objHeading, 0) then
+								FreezeEntityPosition(v.object, true)
+								letSleep = true
+							else
+								letSleep = false
+							end
+						end
+					elseif v.doors and not v.slides and distance < (v.maxDistance * 2) then
 						for k2, v2 in ipairs(v.doors) do
 							local doorState = DoorSystemGetDoorState(v2.doorHash)
 							v2.objCurrentHeading = GetEntityHeading(v2.object)
-							if v.locked and v2.closed then 
+							if v.locked and IsDoorClosed(v2.doorHash) then 
 								DoorSystemSetDoorState(v2.doorHash, 1, false, false)
 								letSleep = true
-							elseif not v.locked and v2.closed then
+							elseif not v.locked then
 								DoorSystemSetDoorState(v2.doorHash, 0, false, false)
-								if v.oldMethod then FreezeEntityPosition(v2.object, false) end
-								v2.closed = false
-								letSleep = true
+								letSleep = false
 							else
-								if not v2.closed and v.locked and round(v2.objCurrentHeading, 0) == round(v2.objHeading, 0) then
+								if round(v2.objCurrentHeading, 0) == round(v2.objHeading, 0) then
 									DoorSystemSetDoorState(v2.doorHash, 4, false, false)
-									if v.oldMethod then FreezeEntityPosition(v2.object, true) SetEntityHeading(v2.object, v2.objHeading) end
-									v2.closed = true
 									letSleep = true
-								elseif v.locked and not v2.closed then
+								else
 									letSleep = false
-								else letSleep = true end
+								end
 							end
 						end
 					elseif not v.doors and not v.slides and distance < (v.maxDistance * 2) then
 						local doorState = DoorSystemGetDoorState(v.doorHash)
 						v.objCurrentHeading = GetEntityHeading(v.object)
-						if v.locked and v.closed then 
+						if v.locked and IsDoorClosed(v.doorHash) then 
 							DoorSystemSetDoorState(v.doorHash, 1, false, false)
 							letSleep = true
-						elseif not v.locked and v.closed then
+						elseif not v.locked then
 							DoorSystemSetDoorState(v.doorHash, 0, false, false)
-							if v.oldMethod then FreezeEntityPosition(v.object, false) end
-							v.closed = false
-							letSleep = true
+							letSleep = false
 						else
-							if not v.closed and v.locked and round(v.objCurrentHeading, 0) == round(v.objHeading, 0) then
+							if round(v.objCurrentHeading, 0) == round(v.objHeading, 0) then
 								DoorSystemSetDoorState(v.doorHash, 4, false, false)
-								if v.oldMethod then FreezeEntityPosition(v.object, true) SetEntityHeading(v.object, v.objHeading) end
-								v.closed = true
 								letSleep = true
-							elseif v.locked then
+							else
 								letSleep = false
-							else letSleep = true end
+							end
 						end
 					elseif v.slides and distance < 20 then
 						if v.doors then
@@ -277,7 +283,7 @@ Citizen.CreateThread(function()
 			if closestDistance < closestV.maxDistance and closestV.setText then
 				if not closestV.doors then
 					local doorState = DoorSystemGetDoorState(closestV.doorHash)
-					if closestV.locked and doorState ~= 1 then
+					if closestV.locked and round(closestV.objCurrentHeading, 0) ~= round(closestV.objHeading, 0) then
 						DrawTextNUI(closestV.textCoords, 'Locking')
 					elseif not closestV.locked then
 						if Config.ShowUnlockedText then DrawTextNUI(closestV.textCoords, 'Unlocked') else if isDrawing then SendNUIMessage ({action = "hide"}) isDrawing = false end end
