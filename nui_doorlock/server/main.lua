@@ -1,11 +1,7 @@
 ESX = nil
 local doorInfo = {}
 
-
-AddEventHandler('onResourceStart', function(resourceName)
-	if (GetCurrentResourceName() ~= resourceName) then
-	  return
-	end
+Citizen.CreateThread(function()
 	local path = GetResourcePath(GetCurrentResourceName())
 	path = path:gsub('//', '/')..'/server/states.json'
 	local file = io.open(path, 'r')
