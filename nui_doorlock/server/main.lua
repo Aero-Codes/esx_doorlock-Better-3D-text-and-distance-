@@ -2,10 +2,11 @@ ESX = nil
 local doorInfo = {}
 
 Citizen.CreateThread(function()
+	local xPlayers = #ESX.GetPlayers()
 	local path = GetResourcePath(GetCurrentResourceName())
 	path = path:gsub('//', '/')..'/server/states.json'
 	local file = io.open(path, 'r')
-	if not file then
+	if not file or xPlayers == 0 then
 		file = io.open(path, 'a')
 		for k,v in pairs(Config.DoorList) do
 			doorInfo[k] = v.locked
