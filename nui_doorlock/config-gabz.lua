@@ -276,6 +276,8 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 1.5,
+		setText = true,
+		textCoords = vector3(475.3978, -989.9868, 26.34802)
 	},
 
 	-- gabz_mrpd	ARMOURY 1
