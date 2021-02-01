@@ -45,7 +45,7 @@ function DrawTextNUI(coords, text)
 	local onScreen,_x,_y = GetScreenCoordFromWorldCoord(coords.x,coords.y,coords.z)
 	if _x ~= last_x or _y ~= last_y or text ~= lasttext or paused then
 		isDrawing = true
-		if paused then SendNUIMessage ({action = "hide"}) else SendNUIMessage({action = "display", x = _x, y = _y, text = text, distance = distance}) end
+		if paused then SendNUIMessage ({action = "hide"}) else SendNUIMessage({action = "display", x = _x, y = _y, text = text}) end
 		last_x, last_y, lasttext = _x, _y, text
 		Citizen.Wait(0)
 	end
@@ -329,8 +329,7 @@ RegisterCommand('+doorlock', function()
 		if not IsPedInAnyVehicle(playerPed) then dooranim(closestV.object, closestV.locked) end
 		closestV.locked = not closestV.locked
 		TriggerServerEvent('esx_doorlock:updateState', closestDoor, closestV.locked) -- Broadcast new state of the door to everyone
-		if not closestV.audio then
-			closestV.audio = {}
+		if not closestV.audioLock then
 			if closestV.slides then
 				closestV.audioLock = {['file'] = 'button-remote.ogg', ['volume'] = 0.06}
 				closestV.audioUnlock = {['file'] = 'button-remote.ogg', ['volume'] = 0.06}
