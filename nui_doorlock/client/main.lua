@@ -45,7 +45,7 @@ function DrawTextNUI(coords, text)
 	local onScreen,_x,_y = GetScreenCoordFromWorldCoord(coords.x,coords.y,coords.z)
 	if _x ~= last_x or _y ~= last_y or text ~= lasttext or paused then
 		isDrawing = true
-		if paused then SendNUIMessage ({action = "hide"}) else SendNUIMessage({action = "display", x = _x, y = _y, text = text}) end
+		if paused then SendNUIMessage ({action = "hide"}) else SendNUIMessage({action = "display", x = _x, y = _y, text = text, distance = distance}) end
 		last_x, last_y, lasttext = _x, _y, text
 		Citizen.Wait(0)
 	end
@@ -329,7 +329,17 @@ RegisterCommand('+doorlock', function()
 		if not IsPedInAnyVehicle(playerPed) then dooranim(closestV.object, closestV.locked) end
 		closestV.locked = not closestV.locked
 		TriggerServerEvent('esx_doorlock:updateState', closestDoor, closestV.locked) -- Broadcast new state of the door to everyone
-		if closestV.locked then SendNUIMessage ({action = "playAudioLocked"}) else SendNUIMessage ({action = "playAudioUnlocked"}) end
+		if not closestV.audio then
+			closestV.audio = {}
+			if closestV.slides then
+				closestV.audioLock = {['file'] = 'button-remote.ogg', ['volume'] = 0.06}
+				closestV.audioUnlock = {['file'] = 'button-remote.ogg', ['volume'] = 0.06}
+			else
+				closestV.audioLock = {['file'] = 'door-bolt-4.ogg', ['volume'] = 0.08}
+				closestV.audioUnlock = {['file'] = 'door-bolt-4.ogg', ['volume'] = 0.08}
+			end
+		end
+		if closestV.locked then SendNUIMessage ({action = 'audio', audio = closestV.audioLock}) else SendNUIMessage ({action = 'audio', audio = closestV.audioUnlock}) end
 	end
 end)
 RegisterKeyMapping('+doorlock', 'Interact with a door lock', 'keyboard', 'e')
