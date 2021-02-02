@@ -324,7 +324,7 @@ function IsAuthorized(doorID)
 	return false
 end
 
-RegisterCommand('+doorlock', function()
+RegisterCommand('doorlock', function()
 	if closestDoor and closestA then
 		if not IsPedInAnyVehicle(playerPed) then dooranim(closestV.object, closestV.locked) end
 		closestV.locked = not closestV.locked
@@ -341,4 +341,4 @@ RegisterCommand('+doorlock', function()
 		if closestV.locked then SendNUIMessage ({action = 'audio', audio = closestV.audioLock}) else SendNUIMessage ({action = 'audio', audio = closestV.audioUnlock}) end
 	end
 end)
-RegisterKeyMapping('+doorlock', 'Interact with a door lock', 'keyboard', 'e')
+RegisterKeyMapping('doorlock', 'Interact with a door lock', 'keyboard', 'e')
