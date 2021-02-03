@@ -38,7 +38,7 @@ end)
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 RegisterServerEvent('esx_doorlock:updateState')
-AddEventHandler('esx_doorlock:updateState', function(doorID, locked, slides)
+AddEventHandler('esx_doorlock:updateState', function(doorID, locked, remote)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	if type(doorID) ~= 'number' then
@@ -62,7 +62,7 @@ AddEventHandler('esx_doorlock:updateState', function(doorID, locked, slides)
 	end
 
 	doorInfo[doorID] = locked
-	if not slides then TriggerClientEvent('esx_doorlock:setState', -1, doorID, locked)
+	if not remote then TriggerClientEvent('esx_doorlock:setState', -1, doorID, locked)
 	else TriggerClientEvent('esx_doorlock:setState', -1, doorID, locked, source) end
 end)
 
