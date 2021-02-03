@@ -1,5 +1,6 @@
 ESX = nil
-local closestDoor, closestV, closestDistance, playerPed, playerCoords, playerNotActive, doorCount, retrievedData = nil, nil, nil, nil, nil, true
+local closestDoor, closestV, closestDistance, playerPed, playerCoords, doorCount, retrievedData
+local playerNotActive = true
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -14,7 +15,7 @@ Citizen.CreateThread(function()
 	-- Sync doors with the server
 	ESX.TriggerServerCallback('esx_doorlock:getDoorInfo', function(doorInfo)
 		for doorID, state in pairs(doorInfo) do
-			Config.DoorList[doorID].locked = state
+			TriggerEvent('esx_doorlock:setState', doorID, state)
 		end
 		retrievedData = true
 	end)
@@ -25,7 +26,6 @@ Citizen.CreateThread(function()
 	playerNotActive = nil
 	retrievedData = nil
 end)
-
 
 -- Sync a door with the server
 RegisterNetEvent('esx_doorlock:setState')
