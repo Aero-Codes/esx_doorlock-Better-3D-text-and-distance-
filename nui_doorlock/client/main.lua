@@ -28,7 +28,7 @@ end)
 
 -- Sync a door with the server
 RegisterNetEvent('esx_doorlock:setState')
-AddEventHandler('esx_doorlock:setState', function(doorID, locked)
+AddEventHandler('esx_doorlock:setState', function(doorID, locked, src)
 	CreateThread(function()
 		Config.DoorList[doorID].locked = locked
 		while true do
@@ -41,11 +41,11 @@ AddEventHandler('esx_doorlock:setState', function(doorID, locked)
 					if Config.DoorList[doorID].locked and (v.doorState == 4 or Config.DoorList[doorID].slides) then
 						if Config.DoorList[doorID].oldMethod then FreezeEntityPosition(v.object, true) end
 						DoorSystemSetDoorState(v.doorHash, 1, false, false) -- Set to locked
-						if Config.DoorList[doorID].doors[1].doorState == Config.DoorList[doorID].doors[2].doorState then return end -- End the loop
+						if Config.DoorList[doorID].doors[1].doorState == Config.DoorList[doorID].doors[2].doorState then playSound(Config.DoorList[doorID], src) return end -- End the loop
 					elseif not Config.DoorList[doorID].locked then
 						if Config.DoorList[doorID].oldMethod then FreezeEntityPosition(v.object, false) end
 						DoorSystemSetDoorState(v.doorHash, 0, false, false) -- Set to unlocked
-						if Config.DoorList[doorID].doors[1].doorState == Config.DoorList[doorID].doors[2].doorState then return end -- End the loop
+						if Config.DoorList[doorID].doors[1].doorState == Config.DoorList[doorID].doors[2].doorState then playSound(Config.DoorList[doorID], src) return end -- End the loop
 					elseif not Config.DoorList[doorID].slides then
 						if round(v.currentHeading, 0) == round(v.objHeading, 0) then
 							DoorSystemSetDoorState(v.doorHash, 4, false, false) -- Force to close
@@ -56,13 +56,15 @@ AddEventHandler('esx_doorlock:setState', function(doorID, locked)
 				if not DoesEntityExist(Config.DoorList[doorID].object) then return end -- If the entity does not exist, end the loop
 				Config.DoorList[doorID].currentHeading = GetEntityHeading(Config.DoorList[doorID].object)
 				Config.DoorList[doorID].doorState = DoorSystemGetDoorState(Config.DoorList[doorID].doorHash)
-				if Config.DoorList[doorID].locked and (doorState == 4 or Config.DoorList[doorID].slides) then
+				if Config.DoorList[doorID].locked and (Config.DoorList[doorID].doorState == 4 or Config.DoorList[doorID].slides) then
 					if Config.DoorList[doorID].oldMethod then FreezeEntityPosition(Config.DoorList[doorID].object, true) end
 					DoorSystemSetDoorState(Config.DoorList[doorID].doorHash, 1, false, false) -- Set to locked
+					playSound(Config.DoorList[doorID], src)
 					return -- End the loop
 				elseif not Config.DoorList[doorID].locked then
 					if Config.DoorList[doorID].oldMethod then FreezeEntityPosition(Config.DoorList[doorID].object, false) end
 					DoorSystemSetDoorState(Config.DoorList[doorID].doorHash, 0, false, false) -- Set to unlocked
+					playSound(Config.DoorList[doorID], src)
 					return -- End the loop
 				elseif not Config.DoorList[doorID].slides then
 					if round(Config.DoorList[doorID].currentHeading, 0) == round(Config.DoorList[doorID].objHeading, 0) then
@@ -70,10 +72,29 @@ AddEventHandler('esx_doorlock:setState', function(doorID, locked)
 					end
 				end
 			end
-
 		end
 	end)
 end)
+
+function playSound(door, src)
+	if src then src = NetworkGetEntityFromNetworkId(src) end
+	if not src then origin = door.textCoords elseif src == playerPed then origin = playerCoords else origin = NetworkGetPlayerCoords(src) end
+	local distance = #(playerCoords - origin)
+	print(origin)
+	if distance < 10 then
+		if not door.audioLock then
+			if door.audioRemote then
+				door.audioLock = {['file'] = 'button-remote.ogg', ['volume'] = 0.03}
+				door.audioUnlock = {['file'] = 'button-remote.ogg', ['volume'] = 0.03}
+			else
+				door.audioLock = {['file'] = 'door-bolt-4.ogg', ['volume'] = 0.05}
+				door.audioUnlock = {['file'] = 'door-bolt-4.ogg', ['volume'] = 0.05}
+			end
+		end
+		if door.locked then SendNUIMessage ({action = 'audio', audio = door.audioLock, distance = distance})
+		else SendNUIMessage ({action = 'audio', audio = door.audioUnlock, distance = distance}) end
+	end
+end
 
 RegisterNetEvent('esx:setJob')
 AddEventHandler('esx:setJob', function(job)
@@ -114,86 +135,86 @@ function round(num, decimal)
 	return math.floor(num * mult + 0.5) / mult
 end
 
-function debug(index, doorID)
-	if GetDistanceBetweenCoords(playerCoords, doorID.textCoords) < 3 then
-		if doorID.doors then door = '{'.. doorID.doors[1].object..' '.. doorID.doors[2].object.. '}' else door = doorID.object end
-		return print(   ('id: %s locked: %s object: %s state: %s'):format(index, doorID.locked, door, doorID.doorState)   )
+function debug(doorID, data)
+	if GetDistanceBetweenCoords(playerCoords, data.textCoords) < 3 then
+		if data.doors then door = '{'.. data.doors[1].object..' '.. data.doors[2].object.. '}' else door = data.object end
+		return print(   ('[%s] locked: %s  object: %s'):format(index, data.locked, door)   )
 	end
 end
 
 function updateDoors()
 	playerCoords = GetEntityCoords(PlayerPedId())
-	for _,doorID in ipairs(Config.DoorList) do
-		if doorID.doors then
-			for k,v in ipairs(doorID.doors) do
+	for doorID, data in ipairs(Config.DoorList) do
+		if data.doors then
+			for k,v in ipairs(data.doors) do
 				if #(vector2(playerCoords.x, playerCoords.y) - vector2(v.objCoords.x, v.objCoords.y)) < 100 then
 					v.object = GetClosestObjectOfType(v.objCoords, 1.0, v.objHash, false, false, false)
-					if doorID.delete then
+					if data.delete then
 						SetEntityAsMissionEntity(v.object, 1, 1)
 						DeleteObject(v.object)
 						v.object = nil
 					end
 					if v.object then
-						v.doorHash = 'doorlock_'.._..'-'..k
+						v.doorHash = 'doorlock_'..doorID..'-'..k
 						AddDoorToSystem(v.doorHash, v.objHash, v.objCoords, false, false, false)
-						if doorID.locked then DoorSystemSetDoorState(v.doorHash, 4, false, false) DoorSystemSetDoorState(v.doorHash, 1, false, false) else
-							DoorSystemSetDoorState(v.doorHash, 0, false, false) if doorID.oldMethod then FreezeEntityPosition(v.object, false) end end
+						if data.locked then DoorSystemSetDoorState(v.doorHash, 4, false, false) DoorSystemSetDoorState(v.doorHash, 1, false, false) else
+							DoorSystemSetDoorState(v.doorHash, 0, false, false) if data.oldMethod then FreezeEntityPosition(v.object, false) end end
 					end
 				elseif v.object then RemoveDoorFromSystem(v.doorHash) end
 			end
-		elseif not doorID.doors then
-			if #(vector2(playerCoords.x, playerCoords.y) - vector2(doorID.objCoords.x, doorID.objCoords.y)) < 100 then
-				if doorID.slides then doorID.object = GetClosestObjectOfType(doorID.objCoords, 5.0, doorID.objHash, false, false, false) else
-					doorID.object = GetClosestObjectOfType(doorID.objCoords, 1.0, doorID.objHash, false, false, false)
+		elseif not data.doors then
+			if #(vector2(playerCoords.x, playerCoords.y) - vector2(data.objCoords.x, data.objCoords.y)) < 100 then
+				if data.slides then data.object = GetClosestObjectOfType(data.objCoords, 5.0, data.objHash, false, false, false) else
+					data.object = GetClosestObjectOfType(data.objCoords, 1.0, data.objHash, false, false, false)
 				end
-				if doorID.delete then
-					SetEntityAsMissionEntity(doorID.object, 1, 1)
-					DeleteObject(doorID.object)
-					doorID.object = nil
+				if data.delete then
+					SetEntityAsMissionEntity(data.object, 1, 1)
+					DeleteObject(data.object)
+					data.object = nil
 				end
-				if doorID.object then
-					doorID.doorHash = 'doorlock_'.._
-					AddDoorToSystem(doorID.doorHash, doorID.objHash, doorID.objCoords, false, false, false) 
-					if doorID.locked then DoorSystemSetDoorState(doorID.doorHash, 4, false, false) DoorSystemSetDoorState(doorID.doorHash, 1, false, false) else
-						DoorSystemSetDoorState(doorID.doorHash, 0, false, false) if doorID.oldMethod then FreezeEntityPosition(doorID.object, false) end end
+				if data.object then
+					data.doorHash = 'doorlock_'..doorID
+					AddDoorToSystem(data.doorHash, data.objHash, data.objCoords, false, false, false) 
+					if data.locked then DoorSystemSetDoorState(data.doorHash, 4, false, false) DoorSystemSetDoorState(data.doorHash, 1, false, false) else
+						DoorSystemSetDoorState(data.doorHash, 0, false, false) if data.oldMethod then FreezeEntityPosition(data.object, false) end end
 				end
-			elseif doorID.object then RemoveDoorFromSystem(doorID.doorHash) end
+			elseif data.object then RemoveDoorFromSystem(data.doorHash) end
 		end
 		-- set text coords
-		if not doorID.setText and doorID.doors then
-			for k,v in ipairs(doorID.doors) do
+		if not data.setText and data.doors then
+			for k,v in ipairs(data.doors) do
 				if k == 1 and DoesEntityExist(v.object) then
-					doorID.textCoords = v.objCoords
-				elseif k == 2 and DoesEntityExist(v.object) and doorID.textCoords then
-					local textDistance = doorID.textCoords - v.objCoords
-					doorID.textCoords = (doorID.textCoords - (textDistance / 2))
-					doorID.setText = true
+					data.textCoords = v.objCoords
+				elseif k == 2 and DoesEntityExist(v.object) and data.textCoords then
+					local textDistance = data.textCoords - v.objCoords
+					data.textCoords = (data.textCoords - (textDistance / 2))
+					data.setText = true
 				end
-				if k == 2 and doorID.textCoords and doorID.slides then
-					DoorSystemSetAutomaticDistance(v.doorHash, (doorID.maxDistance * 3), false, false)
+				if k == 2 and data.textCoords and data.slides then
+					DoorSystemSetAutomaticDistance(v.doorHash, (data.maxDistance * 3), false, false)
 					if GetEntityHeightAboveGround(v.object) < 1 then
-						doorID.textCoords = vector3(doorID.textCoords.x, doorID.textCoords.y, doorID.textCoords.z+1.2)
+						data.textCoords = vector3(data.textCoords.x, data.textCoords.y, data.textCoords.z+1.2)
 					end
 				end
 			end
-		elseif not doorID.setText and not doorID.doors and DoesEntityExist(doorID.object) then
-			if not doorID.garage then
-				local minDimension, maxDimension = GetModelDimensions(doorID.objHash)
-				if doorID.fixText then dimensions = minDimension - maxDimension else dimensions = maxDimension - minDimension end
+		elseif not data.setText and not data.doors and DoesEntityExist(data.object) then
+			if not data.garage then
+				local minDimension, maxDimension = GetModelDimensions(data.objHash)
+				if data.fixText then dimensions = minDimension - maxDimension else dimensions = maxDimension - minDimension end
 				local dx, dy = tonumber(string.sub(dimensions.x, 1, 6)), tonumber(string.sub(dimensions.y, 1, 6))
-				local h = tonumber(string.sub(doorID.objHeading, 1, 1))
+				local h = tonumber(string.sub(data.objHeading, 1, 1))
 				if h == 9 or h == 8 or h == 2 then dx, dy = dy, dx end
 				local maths = vector3(dx/2, dy/2, 0)
-				doorID.textCoords = GetEntityCoords(doorID.object) - maths
-				doorID.setText = true
+				data.textCoords = GetEntityCoords(data.object) - maths
+				data.setText = true
 			else
-				doorID.textCoords = GetEntityCoords(doorID.object)
-				doorID.setText = true
+				data.textCoords = GetEntityCoords(data.object)
+				data.setText = true
 			end
-			if doorID.slides then
-				DoorSystemSetAutomaticDistance(doorID.doorHash, (doorID.maxDistance * 2), false, false)
-				if GetEntityHeightAboveGround(doorID.object) < 1 then
-					doorID.textCoords = vector3(doorID.textCoords.x, doorID.textCoords.y, doorID.textCoords.z+1.6)
+			if data.slides then
+				DoorSystemSetAutomaticDistance(data.doorHash, (data.maxDistance * 2), false, false)
+				if GetEntityHeightAboveGround(data.object) < 1 then
+					data.textCoords = vector3(data.textCoords.x, data.textCoords.y, data.textCoords.z+1.6)
 				end
 			end
 		end
@@ -225,7 +246,7 @@ Citizen.CreateThread(function()
 			for k,v in ipairs(Config.DoorList) do
 				if v.setText and (v.object or (v.doors and v.doors[1].object)) then
 					distance = #(v.textCoords - playerCoords)
-					if v.setText and distance < v.maxDistance then
+					if v.setText and distance < (v.maxDistance * 2) then
 						closestDoor, closestV, closestDistance = k, v, distance
 					end
 				end
@@ -235,15 +256,12 @@ Citizen.CreateThread(function()
 	end
 end)
 
-
-
 Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
 		playerPed = PlayerPedId()
 		playerCoords = GetEntityCoords(playerPed)
 		if doorCount ~= nil and doorCount ~= 0 and closestDistance then
-			doorSleep = 100
 			closestDistance = #(closestV.textCoords - playerCoords)
 			if closestDistance < closestV.maxDistance and closestV.setText then
 				doorSleep = 5
@@ -273,7 +291,7 @@ Citizen.CreateThread(function()
 				end
 				closestDoor, closestV, closestDistance = nil, nil, nil
 			end
-		else Citizen.Wait(100) end
+		else doorSleep = 300 Citizen.Wait(100) end
 	end
 end)
 
@@ -295,17 +313,8 @@ RegisterCommand('doorlock', function()
 	if closestDoor and IsAuthorized(closestV) then
 		if not IsPedInAnyVehicle(playerPed) then dooranim(closestV.object, closestV.locked) end
 		closestV.locked = not closestV.locked
-		TriggerServerEvent('esx_doorlock:updateState', closestDoor, closestV.locked) -- Broadcast new state of the door to everyone
-		if not closestV.audioLock then
-			if closestV.slides then
-				closestV.audioLock = {['file'] = 'button-remote.ogg', ['volume'] = 0.06}
-				closestV.audioUnlock = {['file'] = 'button-remote.ogg', ['volume'] = 0.06}
-			else
-				closestV.audioLock = {['file'] = 'door-bolt-4.ogg', ['volume'] = 0.08}
-				closestV.audioUnlock = {['file'] = 'door-bolt-4.ogg', ['volume'] = 0.08}
-			end
-		end
-		if closestV.locked then SendNUIMessage ({action = 'audio', audio = closestV.audioLock}) else SendNUIMessage ({action = 'audio', audio = closestV.audioUnlock}) end
+		--debug(closestDoor, closestV)
+		TriggerServerEvent('esx_doorlock:updateState', closestDoor, closestV.locked, closestV.audioRemote) -- Broadcast new state of the door to everyone
 	end
 end)
 RegisterKeyMapping('doorlock', 'Interact with a door lock', 'keyboard', 'e')
