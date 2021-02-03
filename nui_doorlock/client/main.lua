@@ -34,25 +34,28 @@ AddEventHandler('esx_doorlock:setState', function(doorID, locked)
 	CreateThread(function()
 		while true do
 			Citizen.Wait(0)
-			
+
 			if Config.DoorList[doorID].doors then
+				if not DoesEntityExist(Config.DoorList[doorID].doors[1].object) then return end -- If the entity does not exist, end the loop
 				for k, v in pairs(Config.DoorList[doorID].doors) do
 					v.currentHeading = GetEntityHeading(v.object)
 					v.doorState = DoorSystemGetDoorState(v.doorHash)
 					if Config.DoorList[doorID].locked and (v.doorState == 4 or Config.DoorList[doorID].slides) then
 						if v.oldMethod then FreezeEntityPosition(v.object, true) end
 						DoorSystemSetDoorState(v.doorHash, 1, false, false) -- Set to locked
+						if Config.DoorList[doorID].doors[1].doorState == Config.DoorList[doorID].doors[2].doorState then return end -- End the loop
 					elseif not Config.DoorList[doorID].locked then
 						if v.oldMethod then FreezeEntityPosition(v.object, false) end
 						DoorSystemSetDoorState(v.doorHash, 0, false, false) -- Set to unlocked
+						if Config.DoorList[doorID].doors[1].doorState == Config.DoorList[doorID].doors[2].doorState then return end -- End the loop
 					elseif not Config.DoorList[doorID].slides then
 						if round(v.currentHeading, 0) == round(v.objHeading, 0) then
 							DoorSystemSetDoorState(v.doorHash, 4, false, false) -- Force to close
 						end
 					end
 				end
-				if Config.DoorList[doorID].doors[1].doorState == Config.DoorList[doorID].doors[2].doorState then return end -- End the loop
 			else
+				if not DoesEntityExist(Config.DoorList[doorID].object) then return end -- If the entity does not exist, end the loop
 				local heading = GetEntityHeading(Config.DoorList[doorID].object)
 				local doorState = DoorSystemGetDoorState(Config.DoorList[doorID].doorHash)
 				if Config.DoorList[doorID].locked and (doorState == 4 or Config.DoorList[doorID].slides) then
