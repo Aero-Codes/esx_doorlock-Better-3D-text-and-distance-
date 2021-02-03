@@ -4,8 +4,13 @@ $('document').ready(function() {
     window.addEventListener("message", function (event) {
         if (event.data.action == 'audio') {
             var sound = document.querySelector('#sounds');
+            if (event.data.distance == 0) {
+                var volume = event.data.audio['volume']
+            } else {
+                var volume = event.data.audio['volume'] / (event.data.distance)
+            }
             sound.setAttribute('src', 'sounds/' + event.data.audio['file']);
-            sound.volume = event.data.audio['volume'];
+            sound.volume = volume;
 			sound.play();
         }
         else
