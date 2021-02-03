@@ -25,4 +25,5 @@ States.json will auto-generate if the file does not exist.
 When adding new doors to the config, you should delete states.json so a new one can be made.
 
 <hr>
-<p align="center"><img src="https://i.imgur.com/Sug2Nj5.jpg"/></p>
+<p align="center">https://streamable.com/oheu5e  
+<img src="https://i.imgur.com/Sug2Nj5.jpg"/></p>
