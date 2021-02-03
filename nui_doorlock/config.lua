@@ -1,5 +1,5 @@
 Config = {}
-Config.ShowUnlockedText = true
+Config.ShowUnlockedText = false
 
 Config.DoorList = {
 
@@ -38,7 +38,7 @@ Config.DoorList = {
 		objCoords = vector3(463.4783, -1003.538, 25.00599),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 		fixText = true
 	},
 
@@ -50,7 +50,8 @@ Config.DoorList = {
 		authorizedJobs = { 'police' },
 		locked = true,
 		maxDistance = 5,
-		slides = true
+		slides = true,
+		audioRemote = true
 	},
 	
 	-- MRPD GARAGE 1
@@ -62,7 +63,8 @@ Config.DoorList = {
 		locked = true,
 		maxDistance = 5,
 		garage = true,
-		slides = true
+		slides = true,
+		audioRemote = true
 	},
 	-- MRPD GARAGE 2
 	{
@@ -73,7 +75,8 @@ Config.DoorList = {
 		locked = true,
 		maxDistance = 5,
 		garage = true,
-		slides = true
+		slides = true,
+		audioRemote = true
 	},
 
 	-- MRPD LOCKER ROOMS
@@ -83,7 +86,7 @@ Config.DoorList = {
 		objCoords = vector3(450.1042, -985.7384, 30.83931),
 		authorizedJobs = { 'police', 'offpolice' },
 		locked = true,
-		maxDistance = 1.5
+		maxDistance = 2.0
 	},
 
 	-- MRPD OUTSIDE BALCONY
@@ -93,7 +96,7 @@ Config.DoorList = {
 		objCoords = vector3(464.1584, -1011.26, 33.01121),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 	},
 
 	-- MRPD DOOR TO STAIRWELL AND ROOF
@@ -103,7 +106,7 @@ Config.DoorList = {
 		objCoords = vector3(461.2865, -985.3206, 30.83927),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 	},
 
 	-- MRPD CAPTAIN'S OFFICE
@@ -113,7 +116,7 @@ Config.DoorList = {
 		objCoords = vector3(446.5728, -980.0106, 30.83931),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 		fixText = true
 	},
 
@@ -124,7 +127,7 @@ Config.DoorList = {
 		objCoords = vector3(453.0938, -983.2294, 30.83927),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 		fixText = true,
 		oldMethod = true
 	},
@@ -136,18 +139,18 @@ Config.DoorList = {
 		objCoords = vector3(464.3614, -984.678, 43.83444),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 		fixText = true
 	},
 
 	-- MRPD MUGSHOT ROOM
 	{
 		objHash = -131296141,
-		objHeading = 179.0,
+		objHeading = 179.27,
 		objCoords = vector3(442.6625, -988.2413, 26.81977),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 		fixText = true
 	},
 
@@ -158,7 +161,7 @@ Config.DoorList = {
 		objCoords = vector3(471.3154, -986.1091, 25.05795),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 		fixText = true
 	},
 
@@ -169,7 +172,7 @@ Config.DoorList = {
 		objCoords = vector3(467.5936, -977.9933, 25.05795),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 		fixText = true
 	},
 
@@ -180,7 +183,7 @@ Config.DoorList = {
 		objCoords = vector3(463.6146, -980.5814, 25.05795),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 	},
 
 	-- MRPD CELL ACCESS
@@ -190,7 +193,7 @@ Config.DoorList = {
 		objCoords = vector3(464.5702, -992.6641, 25.06443),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 	},
 
 	-- MRPD NORMAL CELL 1
@@ -200,7 +203,7 @@ Config.DoorList = {
 		objCoords = vector3(461.8065, -994.4086, 25.06443),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 		fixText = true
 	},
 
@@ -211,7 +214,7 @@ Config.DoorList = {
 		objCoords = vector3(461.8065, -997.6584, 25.06443),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 	},
 
 	-- MRPD NORMAL  CELL 3
@@ -221,7 +224,7 @@ Config.DoorList = {
 		objCoords = vector3(461.8065, -1001.302, 25.06443),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 	},
 
 	-- MRPD CELL 1
@@ -231,7 +234,7 @@ Config.DoorList = {
 		objCoords = vector3(467.1922, -996.4594, 25.00599),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 		fixText = true
 	},
 
@@ -242,7 +245,7 @@ Config.DoorList = {
 		objCoords = vector3(471.4755, -996.4594, 25.00599),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 		fixText = true
 	},
 
@@ -253,7 +256,7 @@ Config.DoorList = {
 		objCoords = vector3(475.7543, -996.4594, 25.00599),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 		fixText = true
 	},
 
@@ -264,7 +267,7 @@ Config.DoorList = {
 		objCoords = vector3(480.0301, -996.4594, 25.00599),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 		fixText = true
 	},
 
@@ -275,7 +278,7 @@ Config.DoorList = {
 		objCoords = vector3(468.4872, -1003.548, 25.01314),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 	},
 
 	-- MRPD INTERVIEW 1.5
@@ -285,7 +288,7 @@ Config.DoorList = {
 		objCoords = vector3(471.4747, -1003.538, 25.01223),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 		fixText = true
 	},
 
@@ -296,7 +299,7 @@ Config.DoorList = {
 		objCoords = vector3(477.0497, -1003.553, 25.01203),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 	},
 
 	-- MRPD INTERVIEW 2.5
@@ -306,7 +309,7 @@ Config.DoorList = {
 		objCoords = vector3(480.0301, -1003.538, 25.00599),
 		authorizedJobs = { 'police' },
 		locked = true,
-		maxDistance = 1.5,
+		maxDistance = 2.0,
 		fixText = true
 	},
 
@@ -343,5 +346,6 @@ Config.DoorList = {
 		},
 		
 	},
+
 
 }
