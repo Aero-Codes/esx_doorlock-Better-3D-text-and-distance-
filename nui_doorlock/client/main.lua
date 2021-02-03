@@ -20,7 +20,6 @@ Citizen.CreateThread(function()
 		retrievedData = true
 	end)
 	while not retrievedData do Citizen.Wait(0) end
-	updateDoors(true)
 	while IsPedStill(PlayerPedId()) do Citizen.Wait(0) end
 	updateDoors()
 	playerNotActive = nil
@@ -30,11 +29,10 @@ end)
 -- Sync a door with the server
 RegisterNetEvent('esx_doorlock:setState')
 AddEventHandler('esx_doorlock:setState', function(doorID, locked)
-	Config.DoorList[doorID].locked = locked
 	CreateThread(function()
+		Config.DoorList[doorID].locked = locked
 		while true do
 			Citizen.Wait(0)
-
 			if Config.DoorList[doorID].doors then
 				for k, v in pairs(Config.DoorList[doorID].doors) do
 					if not DoesEntityExist(v.object) then return end -- If the entity does not exist, end the loop
@@ -123,7 +121,7 @@ function debug(index, doorID)
 	end
 end
 
-function updateDoors(starting)
+function updateDoors()
 	playerCoords = GetEntityCoords(PlayerPedId())
 	for _,doorID in ipairs(Config.DoorList) do
 		if doorID.doors then
@@ -200,10 +198,8 @@ function updateDoors(starting)
 			end
 		end
 	end
-	if not starting then
-		doorCount = DoorSystemGetSize()
-		if doorCount ~= 0 then print(('%s doors are loaded'):format(doorCount)) end
-	end
+	doorCount = DoorSystemGetSize()
+	if doorCount ~= 0 then print(('%s doors are loaded'):format(doorCount)) end
 end
 
 Citizen.CreateThread(function()
