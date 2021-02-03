@@ -14,8 +14,8 @@ Citizen.CreateThread(function()
 	ESX.PlayerData = ESX.GetPlayerData()
 	-- Sync doors with the server
 	ESX.TriggerServerCallback('esx_doorlock:getDoorInfo', function(doorInfo)
-		for doorID, state in pairs(doorInfo) do
-			TriggerEvent('esx_doorlock:setState', doorID, state)
+		for doorID, locked in pairs(doorInfo) do
+			Config.DoorList[doorID].locked = locked
 		end
 		retrievedData = true
 	end)
@@ -36,16 +36,16 @@ AddEventHandler('esx_doorlock:setState', function(doorID, locked)
 			Citizen.Wait(0)
 
 			if Config.DoorList[doorID].doors then
-				if not DoesEntityExist(Config.DoorList[doorID].doors[1].object) then return end -- If the entity does not exist, end the loop
 				for k, v in pairs(Config.DoorList[doorID].doors) do
+					if not DoesEntityExist(v.object) then return end -- If the entity does not exist, end the loop
 					v.currentHeading = GetEntityHeading(v.object)
 					v.doorState = DoorSystemGetDoorState(v.doorHash)
 					if Config.DoorList[doorID].locked and (v.doorState == 4 or Config.DoorList[doorID].slides) then
-						if v.oldMethod then FreezeEntityPosition(v.object, true) end
+						if Config.DoorList[doorID].oldMethod then FreezeEntityPosition(v.object, true) end
 						DoorSystemSetDoorState(v.doorHash, 1, false, false) -- Set to locked
 						if Config.DoorList[doorID].doors[1].doorState == Config.DoorList[doorID].doors[2].doorState then return end -- End the loop
 					elseif not Config.DoorList[doorID].locked then
-						if v.oldMethod then FreezeEntityPosition(v.object, false) end
+						if Config.DoorList[doorID].oldMethod then FreezeEntityPosition(v.object, false) end
 						DoorSystemSetDoorState(v.doorHash, 0, false, false) -- Set to unlocked
 						if Config.DoorList[doorID].doors[1].doorState == Config.DoorList[doorID].doors[2].doorState then return end -- End the loop
 					elseif not Config.DoorList[doorID].slides then
@@ -56,8 +56,8 @@ AddEventHandler('esx_doorlock:setState', function(doorID, locked)
 				end
 			else
 				if not DoesEntityExist(Config.DoorList[doorID].object) then return end -- If the entity does not exist, end the loop
-				local heading = GetEntityHeading(Config.DoorList[doorID].object)
-				local doorState = DoorSystemGetDoorState(Config.DoorList[doorID].doorHash)
+				Config.DoorList[doorID].currentHeading = GetEntityHeading(Config.DoorList[doorID].object)
+				Config.DoorList[doorID].doorState = DoorSystemGetDoorState(Config.DoorList[doorID].doorHash)
 				if Config.DoorList[doorID].locked and (doorState == 4 or Config.DoorList[doorID].slides) then
 					if Config.DoorList[doorID].oldMethod then FreezeEntityPosition(Config.DoorList[doorID].object, true) end
 					DoorSystemSetDoorState(Config.DoorList[doorID].doorHash, 1, false, false) -- Set to locked
@@ -67,7 +67,7 @@ AddEventHandler('esx_doorlock:setState', function(doorID, locked)
 					DoorSystemSetDoorState(Config.DoorList[doorID].doorHash, 0, false, false) -- Set to unlocked
 					return -- End the loop
 				elseif not Config.DoorList[doorID].slides then
-					if round(heading, 0) == round(Config.DoorList[doorID].objHeading, 0) then
+					if round(Config.DoorList[doorID].currentHeading, 0) == round(Config.DoorList[doorID].objHeading, 0) then
 						DoorSystemSetDoorState(Config.DoorList[doorID].doorHash, 4, false, false) -- Force to close
 					end
 				end
@@ -116,6 +116,13 @@ function round(num, decimal)
 	return math.floor(num * mult + 0.5) / mult
 end
 
+function debug(index, doorID)
+	if GetDistanceBetweenCoords(playerCoords, doorID.textCoords) < 3 then
+		if doorID.doors then door = '{'.. doorID.doors[1].object..' '.. doorID.doors[2].object.. '}' else door = doorID.object end
+		return print(   ('id: %s locked: %s object: %s state: %s'):format(index, doorID.locked, door, doorID.doorState)   )
+	end
+end
+
 function updateDoors(starting)
 	playerCoords = GetEntityCoords(PlayerPedId())
 	for _,doorID in ipairs(Config.DoorList) do
@@ -129,13 +136,14 @@ function updateDoors(starting)
 						v.object = nil
 					end
 					if v.object then
-						v.doorHash = GetHashKey('dl'.._..k)
+						v.doorHash = 'doorlock_'.._..'-'..k
 						AddDoorToSystem(v.doorHash, v.objHash, v.objCoords, false, false, false)
-						if doorID.locked then DoorSystemSetDoorState(v.doorHash, 4, false, false) DoorSystemSetDoorState(v.doorHash, 1, false, false) end
+						if doorID.locked then DoorSystemSetDoorState(v.doorHash, 4, false, false) DoorSystemSetDoorState(v.doorHash, 1, false, false) else
+							DoorSystemSetDoorState(v.doorHash, 0, false, false) if doorID.oldMethod then FreezeEntityPosition(v.object, false) end end
 					end
 				elseif v.object then RemoveDoorFromSystem(v.doorHash) end
 			end
-		else
+		elseif not doorID.doors then
 			if #(vector2(playerCoords.x, playerCoords.y) - vector2(doorID.objCoords.x, doorID.objCoords.y)) < 100 then
 				if doorID.slides then doorID.object = GetClosestObjectOfType(doorID.objCoords, 5.0, doorID.objHash, false, false, false) else
 					doorID.object = GetClosestObjectOfType(doorID.objCoords, 1.0, doorID.objHash, false, false, false)
@@ -146,9 +154,10 @@ function updateDoors(starting)
 					doorID.object = nil
 				end
 				if doorID.object then
-					doorID.doorHash = GetHashKey('dl'.._)
-					AddDoorToSystem(doorID.doorHash, doorID.objHash, doorID.objCoords, false, false, false)
-					if doorID.locked then DoorSystemSetDoorState(doorID.doorHash, 4, false, false) DoorSystemSetDoorState(doorID.doorHash, 1, false, false) end
+					doorID.doorHash = 'doorlock_'.._
+					AddDoorToSystem(doorID.doorHash, doorID.objHash, doorID.objCoords, false, false, false) 
+					if doorID.locked then DoorSystemSetDoorState(doorID.doorHash, 4, false, false) DoorSystemSetDoorState(doorID.doorHash, 1, false, false) else
+						DoorSystemSetDoorState(doorID.doorHash, 0, false, false) if doorID.oldMethod then FreezeEntityPosition(doorID.object, false) end end
 				end
 			elseif doorID.object then RemoveDoorFromSystem(doorID.doorHash) end
 		end
