@@ -27,7 +27,7 @@ AddEventHandler('onResourceStop', function(resourceName)
 	local path = GetResourcePath(resourceName)
 	path = path:gsub('//', '/')..'/server/states.json'
 	local file = io.open(path, 'r+')
-	if file then
+	if file and doorInfo then
 		local json = json.encode(doorInfo)
 		file:write(json)
 		file:close()
@@ -38,7 +38,7 @@ end)
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 RegisterServerEvent('esx_doorlock:updateState')
-AddEventHandler('esx_doorlock:updateState', function(doorID, locked)
+AddEventHandler('esx_doorlock:updateState', function(doorID, locked, slides)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	if type(doorID) ~= 'number' then
@@ -62,7 +62,8 @@ AddEventHandler('esx_doorlock:updateState', function(doorID, locked)
 	end
 
 	doorInfo[doorID] = locked
-	TriggerClientEvent('esx_doorlock:setState', -1, doorID, locked)
+	if not slides then TriggerClientEvent('esx_doorlock:setState', -1, doorID, locked)
+	else TriggerClientEvent('esx_doorlock:setState', -1, doorID, locked, source) end
 end)
 
 ESX.RegisterServerCallback('esx_doorlock:getDoorInfo', function(source, cb)
