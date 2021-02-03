@@ -1,9 +1,9 @@
 Config = {}
-Config.ShowUnlockedText = true
+Config.ShowUnlockedText = false
 
 Config.DoorList = {
 ------------------------------------------
---	MISSION ROW POLICE DEPARTMENT	--
+--	MISSION ROW POLICE DEPARTMENT		--
 ------------------------------------------
 	-- gabz_mrpd	FRONT DOORS
 	{
@@ -96,7 +96,8 @@ Config.DoorList = {
 		locked = true,
 		maxDistance = 6,
 		garage = true,
-		slides = true
+		slides = true,
+		audioRemote = true
 	},
 	
 	-- gabz_mrpd	GARAGE ROLLER DOOR 2
@@ -108,7 +109,8 @@ Config.DoorList = {
 		locked = true,
 		maxDistance = 6,
 		garage = true,
-		slides = true
+		slides = true,
+		audioRemote = true
 	},
 	
 	-- gabz_mrpd	BACK GATE
@@ -119,7 +121,8 @@ Config.DoorList = {
 		authorizedJobs = { 'police', 'offpolice' },
 		locked = true,
 		maxDistance = 6,
-		slides = true
+		slides = true,
+		audioRemote = true
 	},
 
 	-- gabz_mrpd	BACK DOORS
